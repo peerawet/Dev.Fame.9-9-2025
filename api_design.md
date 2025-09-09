@@ -1,12 +1,22 @@
 # API Design Document - FITWHEY E-commerce Platform
 
-## Overview
+## AWS Serverless API Architecture
 
-ออกแบบ 3 APIs สำคัญสำหรับระบบ E-commerce ของ FITWHEY โดยคำนึงถึง:
+ออกแบบ RESTful APIs สำหรับระบบ E-commerce ของ FITWHEY บน AWS Serverless Architecture โดยใช้:
 
-- **ความปลอดภัย (Security)**: Authentication, Authorization, Data Validation
-- **ความเร็ว (Performance)**: Caching, Pagination, Efficient Queries
-- **ความถูกต้องของข้อมูล (Data Accuracy)**: Validation, Transaction Safety, Consistency
+- **AWS API Gateway**: REST API Management, Throttling, Caching
+- **AWS Lambda**: Serverless compute for API handlers
+- **DynamoDB**: NoSQL database with single table design
+- **ElastiCache (Redis)**: Caching layer for performance
+- **AWS Cognito**: User authentication and authorization
+
+### Architecture Benefits:
+
+- **ความปลอดภัย (Security)**: AWS WAF, Cognito, IAM roles
+- **ความเร็ว (Performance)**: Lambda@Edge, DynamoDB DAX, API Gateway caching
+- **ความถูกต้องของข้อมูล (Data Accuracy)**: DynamoDB transactions, Lambda validation
+- **Auto Scaling**: ปรับขนาดตามการใช้งานอัตโนมัติ
+- **Cost Optimization**: จ่ายเฉพาะที่ใช้งาน (Pay-per-request)
 
 ---
 

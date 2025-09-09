@@ -1,21 +1,24 @@
-# FITWHEY - Full Stack Developer Test
+# FITWHEY - E-commerce Platform (AWS Serverless)
 
-**ผู้สมัคร**: [ใส่ชื่อของคุณ]  
-**วันที่**: 20 December 2024  
-**ไฟล์**: Dev\_[Name]\_Test_20Dec2024
+**โปรเจค**: FITWHEY E-commerce Platform  
+**Architecture**: AWS Serverless with DynamoDB  
+**วันที่**: 9/9/2025
+**ไฟล์**: Dev*[Fame]*[9/9/2025]
 
 ---
 
 ## สารบัญ
 
-1. [ส่วนที่ 1: JavaScript Functionality](#ส่วนที่-1-javascript-functionality)
-2. [ส่วนที่ 2: Database Design](#ส่วนที่-2-database-design)
-3. [ส่วนที่ 3: API Design](#ส่วนที่-3-api-design)
-4. [การทดสอบและการใช้งาน](#การทดสอบและการใช้งาน)
+1. [Frontend Development](#frontend-development)
+2. [AWS Serverless Architecture](#aws-serverless-architecture)
+3. [DynamoDB Database Design](#dynamodb-database-design)
+4. [API Design (AWS Lambda + API Gateway)](#api-design)
+5. [Deployment & Infrastructure](#deployment--infrastructure)
+6. [การทดสอบและการใช้งาน](#การทดสอบและการใช้งาน)
 
 ---
 
-## ส่วนที่ 1: JavaScript Functionality
+## Frontend Development
 
 ### ✅ งานที่ทำเสร็จ
 
@@ -73,49 +76,75 @@ function updateCartState() {
 
 ---
 
-## ส่วนที่ 2: Database Design
+## AWS Serverless Architecture
 
-### 📊 Entity Relationship Diagram (ERD)
+### 🏗️ Architecture Overview
 
-ออกแบบฐานข้อมูลสำหรับระบบ E-commerce ที่ครอบคลุม:
+ใช้ AWS Serverless services เพื่อสร้างระบบ E-commerce ที่ scalable และ cost-effective:
 
-#### 2.1 Core Entities (16 Tables)
+- **AWS Lambda**: Serverless compute สำหรับ API handlers
+- **API Gateway**: REST API management และ throttling
+- **DynamoDB**: NoSQL database with single table design
+- **CloudFront + S3**: Static website hosting และ CDN
+- **Cognito**: User authentication และ authorization
+- **SQS/SNS**: Event-driven messaging
+- **CloudWatch**: Monitoring และ logging
 
-1. **Users** - ข้อมูลผู้ใช้และระดับสมาชิก
-2. **Products** - ข้อมูลสินค้าหลัก
-3. **Product_Variants** - รูปแบบสินค้า (size, flavor)
-4. **Categories** - หมวดหมู่สินค้า (รองรับ subcategories)
-5. **Brands** - แบรนด์สินค้า
-6. **Shopping_Cart** - ตะกร้าสินค้า
-7. **Orders** - คำสั่งซื้อ
-8. **Order_Items** - รายการสินค้าในคำสั่งซื้อ
-9. **Product_Images** - รูปภาพสินค้า
-10. **Product_Reviews** - รีวิวสินค้า
-11. **Review_Media** - สื่อในรีวิว (รูป/วิดีโอ)
-12. **User_Addresses** - ที่อยู่ผู้ใช้
-13. **Promotions** - โปรโมชั่น
-14. **Product_Promotions** - สินค้าที่อยู่ในโปรโมชั่น
-15. **User_Points_History** - ประวัติคะแนน
-16. **Tier_Benefits** - สิทธิประโยชน์ตาม Tier
+---
 
-#### 2.2 Key Features
+## DynamoDB Database Design
 
+### 📊 Single Table Design Pattern
+
+ออกแบบฐานข้อมูล NoSQL สำหรับระบบ E-commerce โดยใช้ DynamoDB Single Table Design:
+
+#### Table Structure
+
+```
+Table Name: fitwhey-main
+Partition Key: PK (String)
+Sort Key: SK (String)
+Global Secondary Index 1: GSI1PK, GSI1SK
+Global Secondary Index 2: GSI2PK, GSI2SK
+```
+
+#### Entity Types in Single Table
+
+1. **Users** - ข้อมูลผู้ใช้และระดับสมาชิก (`USER#id`)
+2. **Products** - ข้อมูลสินค้าหลัก (`PRODUCT#id`)
+3. **Product_Variants** - รูปแบบสินค้า (`PRODUCT#id`, `VARIANT#size-flavor`)
+4. **Categories** - หมวดหมู่สินค้า (`CATEGORY#name`)
+5. **Brands** - แบรนด์สินค้า (`BRAND#name`)
+6. **Shopping_Cart** - ตะกร้าสินค้า (`USER#id`, `CART#variantId`)
+7. **Orders** - คำสั่งซื้อ (`USER#id`, `ORDER#date#orderId`)
+8. **Order_Items** - รายการสินค้า (embedded in Orders)
+9. **Product_Images** - รูปภาพสินค้า (embedded in Products)
+10. **Product_Reviews** - รีวิวสินค้า (`PRODUCT#id`, `REVIEW#userId`)
+11. **User_Addresses** - ที่อยู่ผู้ใช้ (`USER#id`, `ADDRESS#type`)
+12. **Promotions** - โปรโมชั่น (`PROMOTION#id`)
+13. **User_Points_History** - ประวัติคะแนน (`USER#id`, `POINTS#date`)
+14. **Tier_Benefits** - สิทธิประโยชน์ตาม Tier (`TIER#level`)
+
+#### Key Features
+
+- **Single Table Design**: ประสิทธิภาพสูง, cost-effective
 - **Multi-tier System**: Basic, Pro, VIP members
 - **Complex Product Variants**: Size และ Flavor combinations
 - **Points/Loyalty System**: Earn และ redeem points
 - **Review System**: รีวิวพร้อมรูปภาพ/วิดีโอ
 - **Promotion Management**: Flash sales, discounts, bundles
-- **Inventory Management**: Real-time stock tracking
+- **Real-time Inventory**: DynamoDB Streams สำหรับ updates
 
-#### 2.3 Performance Optimizations
+#### Performance Optimizations
 
-- **Indexes**: Primary, composite indexes สำหรับ query performance
-- **Data Integrity**: Constraints และ validation rules
-- **Security**: Soft deletes, audit trails, data encryption
+- **DynamoDB DAX**: Microsecond latency caching
+- **Global Secondary Indexes**: Efficient query patterns
+- **Single Table**: Reduced network calls, atomic transactions
+- **On-demand Billing**: Auto-scaling based on traffic
 
 ---
 
-## ส่วนที่ 3: API Design
+## API Design
 
 ### 🚀 3 APIs สำคัญที่ออกแบบ
 
@@ -209,11 +238,69 @@ POST /api/v1/orders
 
 ### 📋 API Standards
 
-- **Error Handling**: Structured error responses
-- **Rate Limiting**: Headers และ limits
-- **Monitoring**: Request logging และ metrics
-- **Versioning**: URL versioning with backward compatibility
-- **Documentation**: OpenAPI 3.0 specification
+- **AWS API Gateway**: Built-in throttling, caching, monitoring
+- **Lambda Integration**: Event-driven, auto-scaling
+- **Error Handling**: Structured error responses with CloudWatch logging
+- **Rate Limiting**: Per-client throttling และ burst limits
+- **Monitoring**: X-Ray tracing, CloudWatch metrics
+- **Versioning**: API Gateway stages (v1, v2)
+- **Documentation**: API Gateway console + OpenAPI export
+
+---
+
+## Deployment & Infrastructure
+
+### 🚀 AWS CDK Infrastructure as Code
+
+```typescript
+// CDK Stack สำหรับ deployment
+const stack = new FitwheyStack(app, "FitwheyStack", {
+  env: {
+    account: process.env.CDK_DEFAULT_ACCOUNT,
+    region: "ap-southeast-1",
+  },
+});
+```
+
+### Deployment Commands
+
+```bash
+# Install AWS CDK
+npm install -g aws-cdk
+
+# Bootstrap CDK (first time only)
+cdk bootstrap
+
+# Deploy to development
+cdk deploy --context env=dev
+
+# Deploy to production
+cdk deploy --context env=prod
+
+# View differences before deploy
+cdk diff
+
+# Destroy stack
+cdk destroy
+```
+
+### CI/CD Pipeline (GitHub Actions)
+
+```yaml
+name: Deploy to AWS
+on:
+  push:
+    branches: [main, develop]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+      - name: Deploy with CDK
+        run: cdk deploy --require-approval never
+```
 
 ---
 
@@ -267,21 +354,8 @@ npx http-server
 - [x] Buy now functionality
 - [x] Dynamic product updates
 
-### 📁 ไฟล์ที่ส่งมอบ
 
-```
-project-folder/
-├── design/
-│   ├── product-detail-ion.html (Enhanced with JS)
-│   ├── components/
-│   │   └── cart-modal.js (Cart Modal Component)
-│   └── assets/ (CSS, images, icons)
-├── database_design.md (ERD และ database schema)
-├── api_design.md (3 APIs specification)
-└── README.md (เอกสารสรุป)
-```
-
-### 🎯 สิ่งที่ส่งมอบครบถ้วน
+### 🎯 สิ่งที่ส่งมอบ
 
 1. ✅ **HTML Files**: เพิ่ม JavaScript functionality ครบถ้วน
 2. ✅ **Database Design**: ERD ที่ครอบคลุมและเหมาะสม

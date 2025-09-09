@@ -1,335 +1,182 @@
-# Database Design for FITWHEY E-commerce Platform
+# DynamoDB Database Design - FITWHEY E-commerce Platform
 
-## Entity Relationship Diagram (ERD)
+## Single Table Design Pattern
 
-### Core Entities
+### Overview
 
-#### 1. Users (ผู้ใช้งาน)
+ใช้ **DynamoDB Single Table Design** ซึ่งเป็น best practice สำหรับ NoSQL และ AWS Serverless Architecture เพื่อ:
 
-```
-Users
-├── user_id (PK, UUID)
-├── email (UNIQUE, NOT NULL)
-├── password_hash (NOT NULL)
-├── first_name (VARCHAR(50))
-├── last_name (VARCHAR(50))
-├── phone (VARCHAR(20))
-├── date_of_birth (DATE)
-├── gender (ENUM: 'M', 'F', 'Other')
-├── tier_level (ENUM: 'Basic', 'Pro', 'VIP')
-├── points_balance (INT, DEFAULT 0)
-├── is_active (BOOLEAN, DEFAULT TRUE)
-├── created_at (TIMESTAMP)
-├── updated_at (TIMESTAMP)
-```
+- **ลดค่าใช้จ่าย**: หนึ่งตารางแทนหลายตาราง
+- **เพิ่มประสิทธิภาพ**: ลด network calls และ join operations
+- **รองรับ Serverless**: เหมาะสำหรับ Lambda functions
+- **Auto Scaling**: ปรับขนาดตามการใช้งานอัตโนมัติ
 
-#### 2. Products (สินค้า)
+---
+
+## Table Structure
 
 ```
-Products
-├── product_id (PK, UUID)
-├── category_id (FK -> Categories.category_id)
-├── brand_id (FK -> Brands.brand_id)
-├── name (VARCHAR(255), NOT NULL)
-├── description (TEXT)
-├── short_description (VARCHAR(500))
-├── base_price (DECIMAL(10,2), NOT NULL)
-├── weight (DECIMAL(8,2))
-├── is_active (BOOLEAN, DEFAULT TRUE)
-├── created_at (TIMESTAMP)
-├── updated_at (TIMESTAMP)
+Table Name: fitwhey-main
+Partition Key: PK (String)
+Sort Key: SK (String)
+
+Global Secondary Index 1 (GSI1):
+├── Partition Key: GSI1PK (String)
+└── Sort Key: GSI1SK (String)
+
+Global Secondary Index 2 (GSI2):
+├── Partition Key: GSI2PK (String)
+└── Sort Key: GSI2SK (String)
 ```
 
-#### 3. Product_Variants (รูปแบบสินค้า)
+---
 
-```
-Product_Variants
-├── variant_id (PK, UUID)
-├── product_id (FK -> Products.product_id)
-├── size (VARCHAR(50)) -- Sample, 250g, 1lb, 2lb, 5lb, 10lb
-├── flavor (VARCHAR(100)) -- Chocolate, Vanilla, etc.
-├── price (DECIMAL(10,2), NOT NULL)
-├── stock_quantity (INT, DEFAULT 0)
-├── sku (VARCHAR(100), UNIQUE)
-├── expiry_date (DATE)
-├── is_active (BOOLEAN, DEFAULT TRUE)
-├── created_at (TIMESTAMP)
-├── updated_at (TIMESTAMP)
-```
+## Entity Patterns
 
-#### 4. Categories (หมวดหมู่สินค้า)
+### 1. User Entity
 
-```
-Categories
-├── category_id (PK, UUID)
-├── parent_category_id (FK -> Categories.category_id, NULL)
-├── name (VARCHAR(100), NOT NULL)
-├── description (TEXT)
-├── image_url (VARCHAR(500))
-├── sort_order (INT, DEFAULT 0)
-├── is_active (BOOLEAN, DEFAULT TRUE)
-├── created_at (TIMESTAMP)
-├── updated_at (TIMESTAMP)
+```typescript
+{
+  PK: "USER#123e4567-e89b-12d3-a456-426614174000",
+  SK: "PROFILE",
+  GSI1PK: "USER_EMAIL#user@fitwhey.com",
+  GSI1SK: "USER#123e4567-e89b-12d3-a456-426614174000",
+  EntityType: "User",
+  email: "user@fitwhey.com",
+  firstName: "John",
+  lastName: "Doe",
+  tier: "Pro",
+  pointsBalance: 1500,
+  isActive: true,
+  createdAt: "2024-01-01T00:00:00Z"
+}
 ```
 
-#### 5. Brands (แบรนด์)
+### 2. Product Entity
 
-```
-Brands
-├── brand_id (PK, UUID)
-├── name (VARCHAR(100), NOT NULL)
-├── description (TEXT)
-├── logo_url (VARCHAR(500))
-├── is_active (BOOLEAN, DEFAULT TRUE)
-├── created_at (TIMESTAMP)
-├── updated_at (TIMESTAMP)
-```
-
-#### 6. Shopping_Cart (ตะกร้าสินค้า)
-
-```
-Shopping_Cart
-├── cart_id (PK, UUID)
-├── user_id (FK -> Users.user_id)
-├── variant_id (FK -> Product_Variants.variant_id)
-├── quantity (INT, NOT NULL)
-├── added_at (TIMESTAMP)
-├── updated_at (TIMESTAMP)
+```typescript
+{
+  PK: "PRODUCT#550e8400-e29b-41d4-a716-446655440000",
+  SK: "METADATA",
+  GSI1PK: "CATEGORY#whey-protein",
+  GSI1SK: "PRODUCT#550e8400-e29b-41d4-a716-446655440000",
+  EntityType: "Product",
+  name: "Baam 100% My Whey",
+  description: "เวย์โปรตีนคุณภาพสูง...",
+  brand: "BAAM",
+  category: "whey-protein",
+  isActive: true
+}
 ```
 
-#### 7. Orders (คำสั่งซื้อ)
+### 3. Product Variant Entity
 
-```
-Orders
-├── order_id (PK, UUID)
-├── user_id (FK -> Users.user_id)
-├── order_number (VARCHAR(20), UNIQUE)
-├── status (ENUM: 'pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled')
-├── subtotal (DECIMAL(10,2), NOT NULL)
-├── discount_amount (DECIMAL(10,2), DEFAULT 0)
-├── tier_discount_percentage (DECIMAL(5,2), DEFAULT 0)
-├── points_used (INT, DEFAULT 0)
-├── points_earned (INT, DEFAULT 0)
-├── tax_amount (DECIMAL(10,2), DEFAULT 0)
-├── shipping_fee (DECIMAL(10,2), DEFAULT 0)
-├── total_amount (DECIMAL(10,2), NOT NULL)
-├── shipping_address (JSON)
-├── billing_address (JSON)
-├── payment_method (VARCHAR(50))
-├── payment_status (ENUM: 'pending', 'paid', 'failed', 'refunded')
-├── notes (TEXT)
-├── created_at (TIMESTAMP)
-├── updated_at (TIMESTAMP)
+```typescript
+{
+  PK: "PRODUCT#550e8400-e29b-41d4-a716-446655440000",
+  SK: "VARIANT#5lb-chocolate",
+  GSI1PK: "VARIANT_SKU#BAAM-WHEY-5LB-CHOC",
+  GSI1SK: "VARIANT#var_789",
+  EntityType: "ProductVariant",
+  size: "5lb",
+  flavor: "Chocolate",
+  price: { base: 1800, Pro: 1550, VIP: 1500 },
+  stockQuantity: 150,
+  isAvailable: true
+}
 ```
 
-#### 8. Order_Items (รายการสินค้าในคำสั่งซื้อ)
+### 4. Shopping Cart Entity
 
-```
-Order_Items
-├── item_id (PK, UUID)
-├── order_id (FK -> Orders.order_id)
-├── variant_id (FK -> Product_Variants.variant_id)
-├── quantity (INT, NOT NULL)
-├── unit_price (DECIMAL(10,2), NOT NULL)
-├── tier_price (DECIMAL(10,2))
-├── total_price (DECIMAL(10,2), NOT NULL)
-├── created_at (TIMESTAMP)
-```
-
-#### 9. Product_Images (รูปภาพสินค้า)
-
-```
-Product_Images
-├── image_id (PK, UUID)
-├── product_id (FK -> Products.product_id)
-├── image_url (VARCHAR(500), NOT NULL)
-├── alt_text (VARCHAR(255))
-├── sort_order (INT, DEFAULT 0)
-├── is_primary (BOOLEAN, DEFAULT FALSE)
-├── created_at (TIMESTAMP)
+```typescript
+{
+  PK: "USER#123e4567-e89b-12d3-a456-426614174000",
+  SK: "CART#var_789",
+  EntityType: "CartItem",
+  variantId: "var_789",
+  quantity: 2,
+  unitPrice: 1550.00,
+  addedAt: "2024-12-20T10:30:00Z"
+}
 ```
 
-#### 10. Product_Reviews (รีวิวสินค้า)
+### 5. Order Entity
 
-```
-Product_Reviews
-├── review_id (PK, UUID)
-├── product_id (FK -> Products.product_id)
-├── user_id (FK -> Users.user_id)
-├── order_id (FK -> Orders.order_id)
-├── rating (INT, CHECK rating >= 1 AND rating <= 5)
-├── title (VARCHAR(255))
-├── comment (TEXT)
-├── is_verified_purchase (BOOLEAN, DEFAULT FALSE)
-├── likes_count (INT, DEFAULT 0)
-├── is_approved (BOOLEAN, DEFAULT FALSE)
-├── created_at (TIMESTAMP)
-├── updated_at (TIMESTAMP)
-```
-
-#### 11. Review_Media (สื่อในรีวิว)
-
-```
-Review_Media
-├── media_id (PK, UUID)
-├── review_id (FK -> Product_Reviews.review_id)
-├── media_type (ENUM: 'image', 'video')
-├── media_url (VARCHAR(500), NOT NULL)
-├── thumbnail_url (VARCHAR(500))
-├── sort_order (INT, DEFAULT 0)
-├── created_at (TIMESTAMP)
+```typescript
+{
+  PK: "USER#123e4567-e89b-12d3-a456-426614174000",
+  SK: "ORDER#2024-12-20#ord_789",
+  GSI1PK: "ORDER#ord_789",
+  GSI1SK: "2024-12-20T10:35:00Z",
+  EntityType: "Order",
+  orderNumber: "FW-2024-001234",
+  status: "confirmed",
+  totalAmount: 3162.15,
+  items: [...],
+  createdAt: "2024-12-20T10:35:00Z"
+}
 ```
 
-#### 12. User_Addresses (ที่อยู่ผู้ใช้)
+---
 
-```
-User_Addresses
-├── address_id (PK, UUID)
-├── user_id (FK -> Users.user_id)
-├── type (ENUM: 'shipping', 'billing')
-├── first_name (VARCHAR(50))
-├── last_name (VARCHAR(50))
-├── phone (VARCHAR(20))
-├── address_line_1 (VARCHAR(255))
-├── address_line_2 (VARCHAR(255))
-├── city (VARCHAR(100))
-├── state (VARCHAR(100))
-├── postal_code (VARCHAR(20))
-├── country (VARCHAR(100))
-├── is_default (BOOLEAN, DEFAULT FALSE)
-├── created_at (TIMESTAMP)
-├── updated_at (TIMESTAMP)
-```
+## Access Patterns
 
-#### 13. Promotions (โปรโมชั่น)
+### User Patterns
 
-```
-Promotions
-├── promotion_id (PK, UUID)
-├── name (VARCHAR(255), NOT NULL)
-├── description (TEXT)
-├── type (ENUM: 'flash_sale', 'discount', 'bundle', 'points_multiplier')
-├── discount_type (ENUM: 'percentage', 'fixed_amount', 'buy_x_get_y')
-├── discount_value (DECIMAL(10,2))
-├── min_order_amount (DECIMAL(10,2))
-├── max_discount_amount (DECIMAL(10,2))
-├── usage_limit (INT)
-├── used_count (INT, DEFAULT 0)
-├── start_date (TIMESTAMP)
-├── end_date (TIMESTAMP)
-├── is_active (BOOLEAN, DEFAULT TRUE)
-├── created_at (TIMESTAMP)
-├── updated_at (TIMESTAMP)
-```
+- Get user by ID: `PK = USER#{userId}`, `SK = PROFILE`
+- Get user by email: `GSI1PK = USER_EMAIL#{email}`
+- Get user cart: `PK = USER#{userId}`, `SK begins_with CART#`
+- Get user orders: `PK = USER#{userId}`, `SK begins_with ORDER#`
 
-#### 14. Product_Promotions (สินค้าที่อยู่ในโปรโมชั่น)
+### Product Patterns
 
-```
-Product_Promotions
-├── product_promotion_id (PK, UUID)
-├── promotion_id (FK -> Promotions.promotion_id)
-├── product_id (FK -> Products.product_id)
-├── variant_id (FK -> Product_Variants.variant_id, NULL)
-├── created_at (TIMESTAMP)
-```
+- Get product: `PK = PRODUCT#{productId}`, `SK = METADATA`
+- Get variants: `PK = PRODUCT#{productId}`, `SK begins_with VARIANT#`
+- Get by category: `GSI1PK = CATEGORY#{categoryName}`
+- Get by SKU: `GSI1PK = VARIANT_SKU#{sku}`
 
-#### 15. User_Points_History (ประวัติคะแนน)
+### Order Patterns
 
-```
-User_Points_History
-├── history_id (PK, UUID)
-├── user_id (FK -> Users.user_id)
-├── order_id (FK -> Orders.order_id, NULL)
-├── transaction_type (ENUM: 'earned', 'used', 'expired', 'refunded')
-├── points_amount (INT, NOT NULL)
-├── description (VARCHAR(255))
-├── created_at (TIMESTAMP)
-```
+- Get order by ID: `GSI1PK = ORDER#{orderId}`
+- Get orders by status: `GSI2PK = ORDER_STATUS#{status}`
 
-#### 16. Tier_Benefits (สิทธิประโยชน์ตาม Tier)
+---
 
-```
-Tier_Benefits
-├── benefit_id (PK, UUID)
-├── tier_level (ENUM: 'Basic', 'Pro', 'VIP')
-├── benefit_type (ENUM: 'discount_percentage', 'free_shipping', 'points_multiplier')
-├── benefit_value (DECIMAL(10,2))
-├── description (VARCHAR(255))
-├── is_active (BOOLEAN, DEFAULT TRUE)
-├── created_at (TIMESTAMP)
-```
+## Performance Features
 
-## Relationships
+### 1. DynamoDB Optimizations
 
-### Primary Relationships:
+- **On-demand billing**: Auto-scaling
+- **DynamoDB DAX**: Microsecond latency
+- **Global Tables**: Multi-region replication
+- **Streams**: Real-time data processing
 
-- Users → Shopping_Cart (1:N)
-- Users → Orders (1:N)
-- Users → Product_Reviews (1:N)
-- Users → User_Addresses (1:N)
-- Users → User_Points_History (1:N)
+### 2. Query Efficiency
 
-- Products → Product_Variants (1:N)
-- Products → Product_Images (1:N)
-- Products → Product_Reviews (1:N)
-- Products → Product_Promotions (1:N)
+- **Single table queries**: No joins needed
+- **Batch operations**: Multiple items in one call
+- **Consistent reads**: When data consistency is critical
+- **Projection expressions**: Return only needed attributes
 
-- Categories → Products (1:N)
-- Categories → Categories (1:N) -- Self-referencing for subcategories
-- Brands → Products (1:N)
+---
 
-- Orders → Order_Items (1:N)
-- Product_Variants → Order_Items (1:N)
-- Product_Variants → Shopping_Cart (1:N)
+## Security & Compliance
 
-- Product_Reviews → Review_Media (1:N)
+### 1. Encryption
 
-- Promotions → Product_Promotions (1:N)
+- **At rest**: AWS managed keys
+- **In transit**: TLS 1.2+
+- **Field-level**: Sensitive data encryption
 
-## Indexes for Performance
+### 2. Access Control
 
-### Primary Indexes:
+- **IAM roles**: Least privilege principle
+- **VPC endpoints**: Private network access
+- **Audit logging**: CloudTrail integration
 
-- Users: email, tier_level, is_active
-- Products: category_id, brand_id, is_active
-- Product_Variants: product_id, sku, is_active
-- Orders: user_id, status, created_at
-- Product_Reviews: product_id, user_id, is_approved
+This DynamoDB design supports all FITWHEY e-commerce requirements while providing:
 
-### Composite Indexes:
-
-- Shopping_Cart: (user_id, variant_id)
-- Order_Items: (order_id, variant_id)
-- Product_Images: (product_id, sort_order)
-- User_Points_History: (user_id, created_at)
-
-## Data Integrity Constraints
-
-1. **Referential Integrity**: All foreign keys must reference valid records
-2. **Check Constraints**:
-   - Rating must be between 1-5
-   - Points balance cannot be negative
-   - Prices must be positive
-3. **Unique Constraints**:
-   - User email must be unique
-   - Product SKU must be unique
-   - Order number must be unique
-4. **Not Null Constraints**: Critical fields like names, prices, and user credentials
-
-## Security Considerations
-
-1. **Password Storage**: Use bcrypt or similar hashing algorithm
-2. **PII Protection**: Encrypt sensitive personal information
-3. **Audit Trail**: Track all critical data changes
-4. **Soft Deletes**: Use is_active flags instead of hard deletes
-5. **Data Retention**: Implement policies for old data cleanup
-
-This database design supports:
-
-- Multi-tier customer system with benefits
-- Complex product variants (size, flavor)
-- Comprehensive order management
-- Review system with media
-- Promotion and discount management
-- Points/loyalty system
-- Flexible address management
+- **High performance** (single-digit millisecond latency)
+- **Cost efficiency** (pay-per-request pricing)
+- **Scalability** (automatic scaling)
+- **Reliability** (99.99% availability SLA)
