@@ -1,392 +1,114 @@
-# FITWHEY - E-commerce Platform (AWS Serverless)
+## FITWHEY E-commerce – คำอธิบาย ERD (ภาษาไทย)
 
-**โปรเจค**: FITWHEY E-commerce Platform  
-**Architecture**: AWS Serverless with DynamoDB  
-**วันที่**: 9/9/2025
-**ไฟล์**: Dev*[Fame]*[9/9/2025]
+คำอธิบายโครงสร้างฐานข้อมูล (ERD) สำหรับระบบ E-commerce ของ FITWHEY ที่รองรับสินค้าแบบมีรูปแบบ (Variant) และรสชาติ (Flavor), ตะกร้า/สั่งซื้อ, รีวิว, โปรโมชั่น และการแจ้งเตือน พร้อมแผนภาพ Mermaid สำหรับเอกสาร
 
----
+### แผนผัง ERD (Mermaid)
 
-## สารบัญ
+```mermaid
+erDiagram
+    user_tiers ||--o{ users : has
+    users ||--o{ addresses : has
+    users ||--o{ orders : places
+    users ||--o{ shopping_carts : has
+    users ||--o{ reviews : writes
+    users ||--o{ review_votes : votes
+    users ||--o{ user_notification_views : views
 
-1. [Frontend Development](#frontend-development)
-2. [AWS Serverless Architecture](#aws-serverless-architecture)
-3. [DynamoDB Database Design](#dynamodb-database-design)
-4. [API Design (AWS Lambda + API Gateway)](#api-design)
-5. [Deployment & Infrastructure](#deployment--infrastructure)
-6. [การทดสอบและการใช้งาน](#การทดสอบและการใช้งาน)
+    categories ||--o{ categories : contains
+    categories ||--o{ products : contains
 
----
+    products ||--o{ product_variants : has
+    products ||--o{ product_flavors : has
+    products ||--o{ product_images : has
+    products ||--o{ product_faqs : has
+    products ||--o{ reviews : receives
+    products ||--o{ promotion_products : participates
 
-## Frontend Development
+    product_variants ||--o{ product_variant_flavors : combines
+    product_flavors ||--o{ product_variant_flavors : combines
 
-### ✅ งานที่ทำเสร็จ
+    product_variant_flavors ||--o{ shopping_carts : added_to
+    product_variant_flavors ||--o{ order_items : ordered
 
-#### 1.1 Product Detail Page (`product-detail-ion.html`)
+    orders ||--o{ order_items : contains
+    order_items ||--o{ reviews : reviewed
 
-- **Image Slider**: ใช้ Swiper.js สำหรับแสดงรูปภาพสินค้าแบบ carousel
-- **Tab Navigation**: ระบบ tab สำหรับ Overview, Benefit, Direction, Storage, Cautions, Q&A
-- **Size Selection**: เลือกขนาดสินค้า (Sample, 250g, 1lb, 2lb, 5lb, 10lb, 12lb)
-- **Add to Cart**: ปุ่มเพิ่มสินค้าลงตะกร้า เปิด modal cart
-- **Favorite Toggle**: ปุ่ม favorite สำหรับเก็บสินค้าที่ชื่นชอบ
-- **Review Interaction**: ปุ่ม like/unlike สำหรับรีวิวสินค้า
-- **Product Recommendations**: Slider สำหรับสินค้าแนะนำ
+    reviews ||--o{ review_media : has
+    reviews ||--o{ review_votes : receives
 
-#### 1.2 Cart Modal Component (`components/cart-modal.js`)
-
-- **Class-based Component**: ใช้ ES6 Class สำหรับจัดการ modal
-- **Modal Management**: เปิด/ปิด modal ด้วย breakpoint
-- **Product Selection**: เลือก size และ flavor ของสินค้า
-- **Quantity Control**: เพิ่ม/ลดจำนวนสินค้า
-- **Cart Actions**: Add to Cart, Buy Now พร้อม validation
-- **Dynamic Updates**: สามารถอัพเดตข้อมูลสินค้าได้
-- **Reusable**: สามารถใช้ในหน้าอื่นๆ ได้
-
-#### 1.3 JavaScript Libraries ที่ใช้
-
-- **Swiper.js**: สำหรับ image slider และ content slider
-- **Ionic Framework**: UI components และ modal management
-- **ES6 Classes**: สำหรับ component architecture
-- **Vanilla JavaScript**: Event handling และ DOM manipulation
-
-### 🔧 Features ที่เพิ่มเข้ามา
-
-```javascript
-// ตัวอย่าง code สำคัญ
-// Tab switching functionality
-tabButtons.forEach((button, index) => {
-  button.addEventListener("click", function () {
-    tabButtons.forEach((btn) => btn.classList.remove("active"));
-    this.classList.add("active");
-    contentSlider.slideTo(index);
-  });
-});
-
-// Cart state validation
-function updateCartState() {
-  const selectors = activeModal.querySelectorAll(".qcart-selector");
-  let allSelected = true;
-  selectors.forEach((selector) => {
-    const selectedBtn = selector.querySelector(".selector-btn.select");
-    if (!selectedBtn) allSelected = false;
-  });
-  // Enable/disable add to cart button based on selections
-}
+    promotions ||--o{ promotion_products : applies_to
+    notifications ||--o{ user_notification_views : viewed_by
 ```
 
----
+### โครงสร้างหลักของระบบ (7 ส่วน)
 
-## AWS Serverless Architecture
+- **ระบบจัดการผู้ใช้ (User Management)**: ระดับสมาชิก, ผู้ใช้, ที่อยู่
+- **ระบบจัดการสินค้า (Product Catalog)**: หมวดหมู่, สินค้า, รูปแบบ, รสชาติ, รูปภาพ, FAQ
+- **ตะกร้าสินค้า (Shopping Cart)**
+- **คำสั่งซื้อ (Order Management)**: คำสั่งซื้อ, รายการสินค้า
+- **รีวิวสินค้า (Review System)**: รีวิว, รูป/วิดีโอในรีวิว, การโหวตรีวิว
+- **โปรโมชั่น (Promotion System)**: โปรโมชั่น, ผูกสินค้าเข้าร่วมโปร
+- **การแจ้งเตือน (Notification System)**: แจ้งเตือน, การดู/ปิดแจ้งเตือนของผู้ใช้
 
-### 🏗️ Architecture Overview
+### 1) ระบบจัดการผู้ใช้ (User Management)
 
-ใช้ AWS Serverless services เพื่อสร้างระบบ E-commerce ที่ scalable และ cost-effective:
+- **user_tiers (ระดับสมาชิก)**: ระดับ Regular/Pro/VIP, ส่วนลด/สิทธิประโยชน์, คะแนนขั้นต่ำ `min_points`
+- **users (ผู้ใช้)**: บัญชี/โปรไฟล์, คะแนนสะสม `points`, สถานะใช้งาน, ผูก `user_tiers`
+- **addresses (ที่อยู่)**: หลายที่อยู่ต่อผู้ใช้ (shipping/billing/both), ระบุ `is_default`
+- **ความสัมพันธ์**: user_tiers → users (1:N), users → addresses (1:N)
 
-- **AWS Lambda**: Serverless compute สำหรับ API handlers
-- **API Gateway**: REST API management และ throttling
-- **DynamoDB**: NoSQL database with single table design
-- **CloudFront + S3**: Static website hosting และ CDN
-- **Cognito**: User authentication และ authorization
-- **SQS/SNS**: Event-driven messaging
-- **CloudWatch**: Monitoring และ logging
+### 2) ระบบจัดการสินค้า (Product Catalog)
 
----
+- **categories**: โครงสร้างแบบต้นไม้ผ่าน `parent_id` (self-referencing)
+- **products**: ข้อมูลพื้นฐาน/โภชนาการ, `average_rating`/`total_reviews`
+- **product_variants**: ขนาด Sample/250g/1lb/… ราคา/สต็อกแยกกัน
+- **product_flavors**: รสชาติ Chocolate/Vanilla/… พร้อม `hex_color`
+- **product_variant_flavors**: SKU จริง (รวม Variant+Flavor), `sku`, `stock_quantity`, `expiry_date`
+- **product_images / product_faqs**: รูปภาพ/คำถามที่พบบ่อย
+- **ความสัมพันธ์**: categories → categories (1:N), categories → products (1:N), products → variants/flavors (1:N), variants+flavors → variant_flavors (N:M via table)
 
-## DynamoDB Database Design
+### 3) ตะกร้าสินค้า (Shopping Cart)
 
-### 📊 Single Table Design Pattern
+- **shopping_carts**: เก็บรายการ SKU (`variant_flavor_id`) ที่ผู้ใช้เพิ่มและ `quantity`
+- **ความสัมพันธ์**: users → shopping_carts (1:N), product_variant_flavors → shopping_carts (1:N)
 
-ออกแบบฐานข้อมูล NoSQL สำหรับระบบ E-commerce โดยใช้ DynamoDB Single Table Design:
+### 4) คำสั่งซื้อ (Order Management)
 
-#### Table Structure
+- **orders**: `order_number`, `status`/`payment_status`, snapshot ที่อยู่ (`shipping_address`/`billing_address` JSON)
+- **order_items**: snapshot ชื่อ/ขนาด/รสชาติ/ราคา ณ เวลาซื้อ
+- **ความสัมพันธ์**: users → orders (1:N), orders → order_items (1:N), product_variant_flavors → order_items (1:N)
 
-```
-Table Name: fitwhey-main
-Partition Key: PK (String)
-Sort Key: SK (String)
-Global Secondary Index 1: GSI1PK, GSI1SK
-Global Secondary Index 2: GSI2PK, GSI2SK
-```
+### 5) รีวิวสินค้า (Review System)
 
-#### Entity Types in Single Table
+- **reviews**: คะแนน 1–5, ความเห็น, `is_verified_purchase`, อนุมัติ `is_approved`
+- **review_media / review_votes**: สื่อแนบรีวิว, โหวตช่วยได้/ไม่ได้
+- **ความสัมพันธ์**: products → reviews (1:N), users → reviews (1:N), reviews → review_media (1:N), reviews → review_votes (1:N)
 
-1. **Users** - ข้อมูลผู้ใช้และระดับสมาชิก (`USER#id`)
-2. **Products** - ข้อมูลสินค้าหลัก (`PRODUCT#id`)
-3. **Product_Variants** - รูปแบบสินค้า (`PRODUCT#id`, `VARIANT#size-flavor`)
-4. **Categories** - หมวดหมู่สินค้า (`CATEGORY#name`)
-5. **Brands** - แบรนด์สินค้า (`BRAND#name`)
-6. **Shopping_Cart** - ตะกร้าสินค้า (`USER#id`, `CART#variantId`)
-7. **Orders** - คำสั่งซื้อ (`USER#id`, `ORDER#date#orderId`)
-8. **Order_Items** - รายการสินค้า (embedded in Orders)
-9. **Product_Images** - รูปภาพสินค้า (embedded in Products)
-10. **Product_Reviews** - รีวิวสินค้า (`PRODUCT#id`, `REVIEW#userId`)
-11. **User_Addresses** - ที่อยู่ผู้ใช้ (`USER#id`, `ADDRESS#type`)
-12. **Promotions** - โปรโมชั่น (`PROMOTION#id`)
-13. **User_Points_History** - ประวัติคะแนน (`USER#id`, `POINTS#date`)
-14. **Tier_Benefits** - สิทธิประโยชน์ตาม Tier (`TIER#level`)
+### 6) โปรโมชั่น (Promotion System)
 
-#### Key Features
+- **promotions**: ประเภทโปร (flash_sale/discount/…)
+- **promotion_products**: ผูกโปรกับสินค้า/variant เฉพาะ
+- **ความสัมพันธ์**: promotions → promotion_products (1:N), products → promotion_products (1:N)
 
-- **Single Table Design**: ประสิทธิภาพสูง, cost-effective
-- **Multi-tier System**: Basic, Pro, VIP members
-- **Complex Product Variants**: Size และ Flavor combinations
-- **Points/Loyalty System**: Earn และ redeem points
-- **Review System**: รีวิวพร้อมรูปภาพ/วิดีโอ
-- **Promotion Management**: Flash sales, discounts, bundles
-- **Real-time Inventory**: DynamoDB Streams สำหรับ updates
+### 7) การแจ้งเตือน (Notification System)
 
-#### Performance Optimizations
+- **notifications**: ข้อความ, กลุ่มเป้าหมาย, วิธีแสดงผล, เวลาเริ่ม/สิ้นสุด
+- **user_notification_views**: ผู้ใช้ดู/ปิดแจ้งเตือนเมื่อใด
+- **ความสัมพันธ์**: notifications → user_notification_views (1:N), users → user_notification_views (1:N)
 
-- **DynamoDB DAX**: Microsecond latency caching
-- **Global Secondary Indexes**: Efficient query patterns
-- **Single Table**: Reduced network calls, atomic transactions
-- **On-demand Billing**: Auto-scaling based on traffic
+### การทำงานร่วมกันของระบบ (Flow ย่อ)
 
----
+- ผู้ใช้เลือกสินค้า → เลือก Variant (ขนาด) → เลือก Flavor (รสชาติ)
+- เพิ่ม SKU (`product_variant_flavors`) ลงตะกร้า (`shopping_carts`) → ชำระเงิน → สร้าง `orders` และ `order_items`
+- ได้รับสินค้าแล้วสามารถเขียน `reviews`
+- สต็อกลดระดับ SKU, ติดตามวันหมดอายุ/ล็อตผลิต
+- ราคา = ราคาพื้นฐาน Variant + ราคาเพิ่ม Flavor − ส่วนลด Tier − โปรโมชั่น
+- คะแนน: ได้/ใช้คะแนน และมีผลต่อระดับสมาชิก
 
-## API Design
+### หมายเหตุการออกแบบ (Highlights)
 
-### 🚀 3 APIs สำคัญที่ออกแบบ
-
-#### 3.1 Product Catalog API
-
-```http
-GET /api/v1/products/{product_id}
-```
-
-**วัตถุประสงค์**: ดึงข้อมูลสินค้าสำหรับหน้า product detail
-
-**Security Features**:
-
-- JWT Authentication
-- Rate limiting (100 req/min)
-- Input validation (UUID format)
-- HTTPS only
-
-**Performance Features**:
-
-- Redis caching (5-min TTL)
-- CDN for images (24-hr TTL)
-- Optimized database queries
-- GZIP compression
-
-**Data Accuracy**:
-
-- Real-time stock validation
-- Server-side price calculation
-- Audit trail for changes
-
-#### 3.2 Shopping Cart Management API
-
-```http
-POST /api/v1/cart/items
-PUT /api/v1/cart/items/{item_id}
-DELETE /api/v1/cart/items/{item_id}
-```
-
-**วัตถุประสงค์**: จัดการตะกร้าสินค้า
-
-**Security Features**:
-
-- User authorization
-- CSRF protection
-- Request deduplication
-- SQL injection prevention
-
-**Performance Features**:
-
-- Optimistic locking
-- Batch operations
-- Redis session storage
-- Connection pooling
-
-**Data Accuracy**:
-
-- Real-time stock checking
-- Server-side price calculation
-- Database transactions
-- Foreign key constraints
-
-#### 3.3 Order Processing API
-
-```http
-POST /api/v1/orders
-```
-
-**วัตถุประสงค์**: จัดการการสั่งซื้อและชำระเงิน
-
-**Security Features**:
-
-- Idempotency keys
-- PCI DSS compliance
-- Payment tokenization
-- Comprehensive audit logging
-
-**Performance Features**:
-
-- Asynchronous processing
-- Database transactions
-- Caching for user data
-- Webhook handling
-
-**Data Accuracy**:
-
-- Inventory reservation
-- Price integrity validation
-- Payment verification
-- Order state management
-
-### 📋 API Standards
-
-- **AWS API Gateway**: Built-in throttling, caching, monitoring
-- **Lambda Integration**: Event-driven, auto-scaling
-- **Error Handling**: Structured error responses with CloudWatch logging
-- **Rate Limiting**: Per-client throttling และ burst limits
-- **Monitoring**: X-Ray tracing, CloudWatch metrics
-- **Versioning**: API Gateway stages (v1, v2)
-- **Documentation**: API Gateway console + OpenAPI export
-
----
-
-## Deployment & Infrastructure
-
-### 🚀 AWS CDK Infrastructure as Code
-
-```typescript
-// CDK Stack สำหรับ deployment
-const stack = new FitwheyStack(app, "FitwheyStack", {
-  env: {
-    account: process.env.CDK_DEFAULT_ACCOUNT,
-    region: "ap-southeast-1",
-  },
-});
-```
-
-### Deployment Commands
-
-```bash
-# Install AWS CDK
-npm install -g aws-cdk
-
-# Bootstrap CDK (first time only)
-cdk bootstrap
-
-# Deploy to development
-cdk deploy --context env=dev
-
-# Deploy to production
-cdk deploy --context env=prod
-
-# View differences before deploy
-cdk diff
-
-# Destroy stack
-cdk destroy
-```
-
-### CI/CD Pipeline (GitHub Actions)
-
-```yaml
-name: Deploy to AWS
-on:
-  push:
-    branches: [main, develop]
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-      - name: Deploy with CDK
-        run: cdk deploy --require-approval never
-```
-
----
-
-## การทดสอบและการใช้งาน
-
-### 🌐 วิธีการเปิดโปรเจค
-
-#### Option 1: เปิดด้วย Browser โดยตรง
-
-```bash
-# Windows
-start design/product-detail-ion.html
-start design/modal-cart-ion.html
-
-# macOS/Linux
-open design/product-detail-ion.html
-open design/modal-cart-ion.html
-```
-
-#### Option 2: ใช้ Local Server (แนะนำ)
-
-```bash
-# Python
-python -m http.server 8000
-
-# Node.js
-npx http-server
-
-# แล้วเปิด http://localhost:8000/design/
-```
-
-### ✅ Features ที่ทดสอบได้
-
-#### Product Detail Page:
-
-- [x] Image slider navigation
-- [x] Tab switching (Overview, Benefit, etc.)
-- [x] Size selection buttons
-- [x] Add to cart button (เปิด modal)
-- [x] Favorite toggle
-- [x] Review like/unlike
-- [x] Product recommendations slider
-
-#### Cart Modal Component:
-
-- [x] Component-based architecture
-- [x] Modal open/close
-- [x] Size และ flavor selection
-- [x] Quantity increase/decrease
-- [x] Add to cart validation
-- [x] Buy now functionality
-- [x] Dynamic product updates
-
-
-### 🎯 สิ่งที่ส่งมอบ
-
-1. ✅ **HTML Files**: เพิ่ม JavaScript functionality ครบถ้วน
-2. ✅ **Database Design**: ERD ที่ครอบคลุมและเหมาะสม
-3. ✅ **API Design**: 3 APIs ที่คำนึงถึง security, performance, data accuracy
-4. ✅ **Documentation**: เอกสารที่อ่านง่ายและเข้าใจง่าย
-
----
-
-## 💡 Technical Highlights
-
-### Frontend:
-
-- **Responsive Design**: ใช้ Ionic Framework
-- **Interactive UI**: Swiper.js สำหรับ sliders
-- **State Management**: JavaScript event handling
-- **User Experience**: Smooth transitions และ feedback
-
-### Backend Architecture:
-
-- **Scalable Database**: 16 tables with proper relationships
-- **RESTful APIs**: Standard HTTP methods และ status codes
-- **Security First**: Authentication, authorization, data validation
-- **Performance Optimized**: Caching, indexing, async processing
-
-### Best Practices:
-
-- **Code Quality**: Clean, readable JavaScript code
-- **Documentation**: Comprehensive API documentation
-- **Error Handling**: Graceful error management
-- **Testing Ready**: APIs designed for easy testing
-
----
-
-**หมายเหตุ**: โปรเจคนี้พร้อมสำหรับการพัฒนาต่อยอดเป็นระบบ E-commerce ที่สมบูรณ์ โดยมีโครงสร้างที่แข็งแรงและปลอดภัย
+- โครงสร้างยืดหยุ่น รองรับหลายขนาด/รสชาติ และหมวดหมู่แบบ hierarchy
+- ความถูกต้องของข้อมูล: Foreign Keys + snapshot ตอนสั่งซื้อ
+- ประสิทธิภาพ: ดัชนีสำคัญสำหรับค้นหา/รายงาน
+- ใช้ JSON fields เฉพาะจุดที่ต้องการความยืดหยุ่น (เช่น ที่อยู่ในออร์เดอร์)
+- แยกความรับผิดชอบของตารางชัดเจน รองรับการขยายตัวในอนาคต

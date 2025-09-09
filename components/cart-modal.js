@@ -56,8 +56,8 @@ class CartModal {
                                     </div>
                                 </div>
                                 <!-- bottom section -->
-                                <ion-footer class="qcart-confirm-footer">
-                                    <div class="qcart-confirm" lines="none">
+                                <ion-footer class="qcart-confirm-footer" >
+                                    <div class="qcart-confirm" lines="none" style="padding: 10px;">
                                         <div class="qcart-qty-wrap">
                                             <p class="qty-left">Quantity</p>
                                             <div class="qty-right">
