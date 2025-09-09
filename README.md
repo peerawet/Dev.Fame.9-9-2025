@@ -331,15 +331,34 @@ erDiagram
 
     notifications ||--o{ user_notification_views : "viewed_by"
 ```
-- ผมให้AI Generate schemaออกมา
-- จากER Diagram จะมีtable และrelation ต่างๆมากมาย แต่tableที่สำคัญที่สุดสำหรับscopeงาน ของprojectนี้คือ table products
-- ผมขออธิบายดังนี้
-- 1.product แต่ละตัวจะอยู่ในCategoryต่างๆ เพื่อจัดเป็นหมวดหมู่
-- 2. 1 product มีได้หลาย promotions และ 1 promotion มีได้หลาย Products
-- 3.แต่ละProduct จะมีหลาย images, faqs, reviews
-- ที่สำคัญเลยก็คือ variants(ขนาด), flavors(รสชาติ) ซึ่งจะมีตารางที่ประกอบ 2 attribute นี้เข้าด้วยกันเรียกว่า product_variant_flavor ซึ่งจะเรียกว่า 1 SKU เป็น uniq key
+# Project Schema Overview
 
-- SKU ตัวนี้ มีความสำคัญมาก เพราะเกี่ยวข้องกับ ตะกร้าสินค้า เราไม่ได้add product เข้าตะกร้าสินค้า แต่เราadd SKU เข้าตระกร้าสินค้า และระบุจำนวนชิ้น
-- SKU ยังเกี่ยวข้องกับ order แต่ละorder ไม่ได้มีลิสรายproducts โดยตรง แต่จะเป็นรายการ SKU หลายๆรายการที่ประกอบกันเป็น 1 order ซึ่งผมเรียกว่า ตาราง order_items
-- นอกจากนี้ SKU ยังเกี่ยวข้องกับ Inventory เราจะนับstock จำนวนชิ้นแต่ละ SKU
+ผมให้ AI Generate schema ออกมา จาก ER Diagram จะมี table และ relation ต่างๆ มากมาย  
+แต่ table ที่สำคัญที่สุดสำหรับ scope งานของ project นี้คือ **table `products`**
+
+## อธิบายโครงสร้าง
+
+1. **Product แต่ละตัว** จะอยู่ใน **Category** ต่างๆ เพื่อจัดเป็นหมวดหมู่  
+2. **1 Product** มีได้หลาย **Promotions** และ **1 Promotion** มีได้หลาย **Products**  
+3. แต่ละ **Product** จะมีหลาย **Images**, **FAQs**, **Reviews**  , **Variants (ขนาด)**, **Flavors (รสชาติ)**
+
+## Variants และ Flavors
+
+ที่สำคัญเลยก็คือ **Variants (ขนาด)**, **Flavors (รสชาติ)**  
+ซึ่งจะมีตารางที่ประกอบ 2 attribute นี้เข้าด้วยกัน  
+เรียกว่า **`product_variant_flavor`** ซึ่งจะเรียกว่า **1 SKU** และเป็น **Unique Key**
+
+## ความสำคัญของ SKU
+
+- **ตะกร้าสินค้า (Shopping Cart)**  
+  เราไม่ได้ Add Product เข้าตะกร้าสินค้า แต่เรา Add **SKU** เข้าตะกร้าสินค้า และระบุจำนวนชิ้น  
+
+- **Order**  
+  แต่ละ Order ไม่ได้มีลิสต์ Products โดยตรง  
+  แต่จะเป็นรายการ **SKU หลายๆ รายการ** ที่ประกอบกันเป็น 1 Order  
+  ซึ่งอยู่ใน **ตาราง `order_items`**  
+
+- **Inventory**  
+  การนับ Stock จะนับตามจำนวนชิ้นของแต่ละ **SKU**  
+
 
