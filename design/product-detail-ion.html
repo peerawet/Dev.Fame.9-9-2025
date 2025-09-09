@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>product</title>
+
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/custom.css">
+</head>
+
+<body>
+    <ion-app>
+        <!-- header -->
+        <ion-header mode="md" class="top-header-wrap ion-no-border fixed">
+            <ion-toolbar class="toolbar-wrap clear">
+                <ion-buttons slot="start">
+                    <ion-button class="header-btn back-btn">
+                        <img src="assets/icon/white-back-arrow-icon.svg">
+                    </ion-button>
+                </ion-buttons>
+                </ion-searchbar>
+                <ion-buttons slot="primary" class="icon-btn">
+                    <ion-button>
+                        <ion-badge class="noti-count">2</ion-badge>
+                        <img src="assets/icon/cart-icon.svg" alt="" class="icon-size">
+                    </ion-button>
+                    <ion-button>
+                        <ion-badge class="noti-count">99</ion-badge>
+                        <img src="assets/icon/message-icon.svg" alt="" class="icon-size message">
+                    </ion-button>
+                </ion-buttons>
+            </ion-toolbar>
+            <!-- order purchase noti -->
+            <!--
+            <div class="pd-noti-float">
+                <span class="noti-text"><img src="assets/icon/mini-noti-icon.svg"> This product was last placed 2 minutes ago from Nonthaburi</span>
+            </div>
+            -->
+        </ion-header>
+        <!-- mid content -->
+        <ion-content class="main-content-pd" fullscreen>
+            <!-- top detail section -->
+            <div class="pd-top-sec-wrap">
+                <div class="slider-item pd-image-slider">
+                    <!--
+                    <ion-buttons class="slide-btn-left">
+                        <img src="assets/icon/swipe-arrow-left.svg">
+                    </ion-buttons>
+                    <ion-buttons class="slide-btn-right">
+                        <img src="assets/icon/swipe-arrow-right.svg">
+                    </ion-buttons>
+                    -->
+                    <div class="product-label">
+                        <span>5lb</span>
+                    </div>
+                    <div class="slide-count">
+                        <span>1/50</span>
+                    </div>
+                    <div class="swiper-wrapper pd-image-slide">
+                        <div class="swiper-slide">
+                            <ion-img src="assets/img/place-holder0.png" class="slides-product-image"></ion-img>
+                        </div>
+                        <div class="swiper-slide">
+                            <ion-img src="assets/img/place-holder0-1.png" class="slides-product-image"></ion-img>
+                        </div>
+                        <div class="swiper-slide">
+                            <ion-img src="assets/img/place-holder3.png" class="slides-product-image"></ion-img>
+                        </div>
+                    </div>
+                    <div class="tier-level">
+                        <span class="sub-text">Your Tier</span>
+                        <span class="main-text">
+                            <img src="assets/icon/dumbbell-icon.svg">
+                          Pro Member
+                        </span>
+                    </div>
+                </div>
+                <!-- flash -->
+                <div class="pd-flash-wrap">
+                    <span class="flash-header">Flash Sale</span>
+                    <span class="timer">
+                        <ul>
+                            <li>00</li> :
+                            <li>12</li> :
+                            <li>24</li>
+                        </ul>
+                    </span>
+                </div>
+                <!-- product heading info -->
+                <div class="product-heading-wrap">
+                    <div class="product-title">Baam 100% My Whey</div>
+                    <div class="rp-content">
+                        <ion-buttons class="rate">
+                            <label>★★★★★</label><span class="review-count">(200 Reviews)</span>
+                        </ion-buttons>
+                        <span class="points">500</span>
+                    </div>
+                    <div class="pricing-content">
+                        <div class="price-w">
+                            <div class="sub-text">Price</div>
+                            <div class="price-d">฿1,800<span class="price-o">฿2,000</span></div>
+                        </div>
+                        <div class="price-w border-left">
+                            <div class="sub-text">Your Price<ion-icon name="alert-circle-outline"></ion-icon></div>
+                            <div class="price-d">฿1,600</div>
+                            <!--
+                            <div class="sub-text">Next Tier<ion-icon name="alert-circle-outline"></ion-icon></div>
+                            <div class="price-nt">฿1,600</div>
+                            -->
+                        </div>
+                    </div>
+                    <ion-buttons class="pd-size-slider-tab">
+                        <ion-button class="size-sub-btn inactive"><ion-icon name="chevron-back-circle-outline"></ion-icon></ion-button>
+                        <ion-button class="size-sub-btn active">Sample</ion-button>
+                        <ion-button class="size-sub-btn inactive">250g</ion-button>
+                        <ion-button class="size-sub-btn inactive">2lb</ion-button>
+                        <ion-button class="size-sub-btn inactive">5lb</ion-button>
+                        <ion-button class="size-sub-btn inactive">10lb</ion-button>
+                        <ion-button class="size-sub-btn inactive">12lb</ion-button>
+                    </ion-buttons>
+                    <ion-buttons class="supp-btn-wrap">
+                        <ion-button class="supp-btn">View Supplement Fact</ion-button>
+                    </ion-buttons>
+                </div>
+            </div>
+            <div class="line-break"></div>
+            <!-- mid detail section -->
+            <div class="pd-mid-sec-wrap">
+                <!-- navigation bar --> <!-- this nav section is fixed once scroll to top -->
+                <ion-toolbar mode="md" class="pd-mid-nav-wrap">
+                    <ion-segment scrollable class="pd-slider-tab" value="1">
+                        <ion-segment-button class="pd-tab-btn" value="1">
+                            <ion-label class="border-right">Overview</ion-label>
+                        </ion-segment-button>
+                        <ion-segment-button class="pd-tab-btn" value="2">
+                            <ion-label class="border-right">Benefit</ion-label>
+                        </ion-segment-button>
+                        <ion-segment-button class="pd-tab-btn" value="3">
+                            <ion-label class="border-right">Direction</ion-label>
+                        </ion-segment-button>
+                        <ion-segment-button class="pd-tab-btn" value="4">
+                            <ion-label class="border-right">Storage Method</ion-label>
+                        </ion-segment-button>
+                        <ion-segment-button class="pd-tab-btn" value="5">
+                            <ion-label class="border-right">Cautions</ion-label>
+                        </ion-segment-button>
+                        <ion-segment-button class="pd-tab-btn" value="6">
+                            <ion-label class="border-right">Q & A</ion-label>
+                        </ion-segment-button>
+                    </ion-segment>
+                </ion-toolbar>
+                <!-- content slider -->
+                <div class="slider-item pd-content-slider">
+                    <div class="swiper-wrapper content-slide">
+                        <!-- overview -->
+                        <div class="swiper-slide pd-overview">
+                            <h4>Whey Protein</h4>
+                                <div class="rate">
+                                    <span class="text">เพิ่มกล้ามเนื้อ</span>
+                                    <span class="fill-dot"></span>
+                                    <span class="fill-dot"></span>
+                                    <span class="empty-dot"></span>
+                                    <span class="empty-dot"></span>
+                                    <span class="empty-dot"></span>
+                                </div>
+                                <div class="rate">
+                                    <span class="text">ลดไขมัน</span>
+                                    <span class="fill-dot"></span>
+                                    <span class="fill-dot"></span>
+                                    <span class="empty-dot"></span>
+                                    <span class="empty-dot"></span>
+                                    <span class="empty-dot"></span>
+                                </div>
+                                <div class="rate">
+                                    <span class="text">เพิ่มน้ำหนัก</span>
+                                    <span class="fill-dot"></span>
+                                    <span class="fill-dot"></span>
+                                    <span class="empty-dot"></span>
+                                    <span class="empty-dot"></span>
+                                    <span class="empty-dot"></span>
+                                </div>
+                                <div class="rate">
+                                    <span class="text">ฟื้นฟูกล้ามเนื้อ</span>
+                                    <span class="fill-dot"></span>
+                                    <span class="fill-dot"></span>
+                                    <span class="empty-dot"></span>
+                                    <span class="empty-dot"></span>
+                                    <span class="empty-dot"></span>
+                                </div>
+                                <div class="rate">
+                                    <span class="text">ความเร็วในการดูดซึม</span>
+                                    <span class="fill-dot"></span>
+                                    <span class="fill-dot"></span>
+                                    <span class="empty-dot"></span>
+                                    <span class="empty-dot"></span>
+                                    <span class="empty-dot"></span>
+                                </div>
+                            <p>** เป็นเพียงการประเมิณเพื่อสะท้อน สรรพคุณสินค้าเท่านั้น ไม่ได้เปรียนเทียบระหว่างสินค้า</p>
+                            <p><strong>BAAM!! MY WHEY </strong>เป็นเวย์ที่มีส่วนผสมของ Whey protein Concentrate เป็นหลัก (95%+)
+                              ที่มีความคุ้มค่าด้านราคาสูง และสามารถให้ผลได้จริง ตอบโจทย์ได้ทุกเป้าหมาย ไม่ว่าจะเพิ่มกล้ามเนื้อ หรือลดไขมัน
+                              สามารถใช้ได้ทั้งผู้ชาย และผู้หญิง BAAM!! MY WHEY จึงเหมาะสำหรับเป็นเวย์ถุงแรกของทุกคน
+                            </p>
+                            <ul>
+                                <li>โปรตีนดูดซึมไว 25 g. / ช้อน</li>
+                                <li>พลังงาน 140 Kcal. (ไขมัน 2 กรัม, คาร์โบไฮเดรท 4 กรัม)</li>
+                                <li>ให้ BCAA ~5.5 g. , Glutamine ~4 g.</li>
+                                <li>ช่วยซ่อมแซม ฟื้นฟู และ เสริมสร้างมวลกล้ามเนื้อ</li>
+                                <li>มีส่วนช่วยลดความอยากอาหาร และของหวานได้</li>
+                                <li>ไม่มีการใส่น้ำตาล (ใช้สารให้ความหวานทดแทน)</li>
+                                <li>ไม่มีสารอันตราย และ สารต้องห้ามทางกีฬา</li>
+                                <li>เวย์โปรตีน จาก USA นำเข้า และ ตรวจคุณภาพ โดย FITWHEY</li>
+                            </ul>
+                        </div>
+                        <!-- benefit -->
+                        <div class="swiper-slide pd-benefit">
+                            <h4>เวย์โปรตีน โปรตีน สกัดจากนมวัวธรรมชาติ</h4>
+                            <p>แหล่งโปรตีนคุณภาพสูง ตัวเลือกที่ดีอันดับต้นๆ ด้วยความสะดวก และความบริสุทธิ์ของโปรตีนที่สูง ได้โปรตีนเน้นๆ
+                              โดยไม่ต้องรับพลังงาน ส่วนเกินจากไขมัน หรือแป้งที่จะมาพร้อมอาหารปกติ แถมยังสามารถย่อย และดูดซึมได้ไว
+                              ไม่เป็นภาระของกระเพาะอาหาร จึงเป็นอาหารเสริมตัวสำคัญสำหรับทุกเป้าหมาย ไม่ว่าจะสร้างกล้ามเนื้อ ลดไขมัน เพิ่มน้ำหนัก
+                              หรือ จะทานเพื่อสุขภาพ เสริมโปรตีนให้เพียงพอ เวย์โปรตีนก็ตอบได้ทุกโจทย์
+                            </p>
+                            <h4>ประโยชน์ของเวย์โปรตีน</h4>
+                            <h5>ซ่อมแซม และ สร้างกล้ามเนื้อ</h5>
+                            <p>เวย์โปรตีน โปรตีนล้วนๆ ที่อุดมไปด้วย BCAA ที่เป็นกรดอะมิโนที่จำเป็น ที่เรียกว่าเป็นกุญแจสำคัญในการจุดชนวนการ
+                              สร้างกล้ามเนื้อของร่างกาย และมีกรดอะมิโนอื่นๆ รวมกว่า 19 ชนิด ที่เป็นสารอาหารสำคัญสำหรับร่างกาย ช่วยทำให้ร่างกาย
+                              ฟื้นฟูกล้ามเนื้อได้ไวขึ้น และสร้างมวลกล้ามเนื้อที่มากขึ้น
+                            </p>
+                            <p>(ปริมาณโปรตีนรวม (จากทุกๆแหล่ง) ที่ควรได้รับต่อวัน เพื่อการสร้างหล้ามเนื้อได้เต็มที่ แนะนำอยู่ที่ ประมาณ
+                              1.5 - 2 กรัม / น้ำหนักตัว 1 กิโลกรัม ขึ้นไป)
+                            </p>
+                            <h5>ร่างกายสามารถนำไปใช้ได้เต็มเม็ดเต็มหน่วย</h5>
+                            <p>
+                              เวย์โปรตีน เป็นโปรตีนกลุ่มที่ร่างกายสามารถนำไปใช้ได้ดีที่สุด ถ้าเราลองเทียบจากค่าง่ายๆ ที่เรารู้จักกันอย่างค่า BV
+                              (Biological Value)[1] อกไก่มีคะแนนอยู่ที่ 79, ไข่ไก่ ได้คะแนน 100 ส่วน เวย์โปรตีน มีคะแนนอยู่ที่ 104 หรือ ค่าที่เจาะจงขึ้น
+                              อย่างค่า DIAAS (Digestible Indispensable Amino Acid Scores)[2] อกไก่มีคะแนนอยู่ที่ 1 (1.08), ไข่ไก่ ได้ 1 (1.13)
+                              และ เวย์โปรตีน ได้ 1 (1.07) คะแนน จะเห็นว่า เวย์โปรตีน นั้น อยู่ในกลุ่มโปรตีนที่มีคุณภาพสูงที่สุด ไม่ต่างจาก ไก่ และไข่เลย
+                            </p>
+                            <ul>
+                                <li>ค่า Biological Value (BV) คือ ค่าพื้นฐานเพื่อบอกคุณภาพของโปรตีน โดยเทียบระหว่าง โปรตีนที่ได้รับ กับ ที่ร่างกายนำไปใช้ได้</li>
+                                <li>ค่า Digestible Indispensable Amino Acid Scores (DIASS) คือ ค่าที่ใช้บอกคุณภาพของโปรตีนที่แม่นยำขึ้น และเป็นค่าหลักที่ใช้บอกคุณภาพ
+                                  โปรตีนในปัจจุบัน ที่คิดจากการดูซึมกรดอะมิโนต่างๆในลำไส้เล็ก เทียบ ปริมาณกรดอะมืโนืที่ดูดซึมได้ กับ กรดอะมิโนที่ร่างกายต้องการ</li>
+                            </ul>
+                            <h5>ช่วยควบคุมน้ำหนักได้</h5>
+                            <p>
+                              เวย์โปรตีนช่วยคุมความอยากอาหาร และของหวานได้ดี อย่างแรกเพราะรสชาติต่างๆที่ทำออกมา สามารถแทนของหวานได้
+                              แต่ไม่ต้องรับ แป้ง หรือน้ำตาลส่วนเกิน เป็นแหล่งสารอาหาร และพลังงานที่มีคุณภาพกว่าของหวานมาก
+                              <br></br>
+                              สารอาหารประเภทโปรตีนยังทำให้ร่างกานรู้สึกอิ่มได้นานกว่าสารอาหารประเภทแป้ง ทำให้มีส่วนช่วยในการควนคุมน้ำหนักได้
+                              และการทานโปรตีนที่สูง อาจส่งผลให้ร่างกายมีอัตราการเผาผลาญที่สูงขึ้น โดยเฉพาะเมื่อควบคู่กับการออกกำลังกาย
+                            </p>
+                            <h5>เป็นอาหารเสริมที่ไม่มีอันตราย</h5>
+                            <p>
+                              เวย์โปรตีนเป็นอาหารเสริมที่มีงานวิจัยรองรับมากเป็นอันดับต้นๆ และถูกใช้มากเป็นเวลาหลายสิบปี โดยที่ยังไม่พบอันตราย
+                              หรือผลข้างเคียงของการทานเวย์โปรตีน สามารถใช้ได้ทุกเพศ ทุกวัย และสามารถทานเสริมกับอาหารหลักได้ โดยไม่จำกัดแค่
+                              นักกีฬา หรือคนที่ออกกำลังกายเท่านั้น
+                              <br></br>
+                              เวย์โปรตีน จึงเป็นอาหารเสริมพื้นฐาน ที่ควรเลือกใช้ ไม่ว่าเป้าหมายของคุณจะเป็นอะไรก็ตาม
+                            </p>
+                        </div>
+                        <!-- direction -->
+                        <div class="swiper-slide pd-direction">
+                            <h4>Directions</h4>
+                            <img src="assets/img/baam-directions.png">
+                        </div>
+                        <!-- storage -->
+                        <div class="swiper-slide pd-storage">
+                            <h4>Storage</h4>
+                            <ul>
+                                <li>เก็บในที่ที่แห้ง และ เย็น (ไม่เกิน 25 - 30 °C) และไม่โดนแสงแดด</li>
+                                <li>เมื่อเปิดแล้ว ต้องปิดให้สนิททุกครั้ง</li>
+                                <li>ล้างมือให้สะอาด และเช็ดมือให้แห้งทุกครั้ง ก่อนตักผง</li>
+                                <li>หมั่นเขย่าเมื่อตั้งทิ้งไว้เป็นเวลานาน เพื่อป้องกันการแยกชั้น และลดโอกาสการจับตัวกันเป็นก้อนของผง</li>
+                            </ul>
+                        </div>
+                        <!-- cautions -->
+                        <div class="swiper-slide pd-cautions">
+                            <h4>Cautions</h4>
+                            <p>Optional</p>
+                        </div>
+                        <!-- q & a -->
+                        <div class="swiper-slide pd-qa">
+                            <!-- show 4 Q & A -->
+                            <h4>Q & A</h4>
+                            <ion-list>
+                                <div class="qa-main-wrap">
+                                    <div class="qa-main">
+                                        <span class="q-icon">Q</span>
+                                        <p class="q-title">What is the difference between whey A and whey B?</p>
+                                    </div>
+                                    <div class="qa-main">
+                                      <span class="a-icon">A</span>
+                                      <p>Lorem ipsum dolor sit met, consecterur adipiscing elit, ed Do eius mod tempor
+                                        incididut ut labore te nosrud exerci Ullamcanco labori snidi ut aliquip exa
+                                        ead commonde</p>
+                                    </div>
+                                </div>
+                                <div class="qa-main-wrap">
+                                    <div class="qa-main">
+                                        <span class="q-icon">Q</span>
+                                        <p class="q-title">What is the difference between whey A and whey B?</p>
+                                    </div>
+                                    <div class="qa-main">
+                                      <span class="a-icon">A</span>
+                                      <p>Lorem ipsum dolor sit met, consecterur adipiscing elit, ed Do eius mod tempor
+                                        incididut ut labore te nosrud exerci Ullamcanco labori snidi ut aliquip exa
+                                        ead commonde</p>
+                                    </div>
+                                </div>
+                                <div class="qa-main-wrap">
+                                    <div class="qa-main">
+                                        <span class="q-icon">Q</span>
+                                        <p class="q-title">What is the difference between whey A and whey B?</p>
+                                    </div>
+                                    <div class="qa-main">
+                                      <span class="a-icon">A</span>
+                                      <p>Lorem ipsum dolor sit met, consecterur adipiscing elit, ed Do eius mod tempor
+                                        incididut ut labore te nosrud exerci Ullamcanco labori snidi ut aliquip exa
+                                        ead commonde</p>
+                                    </div>
+                                </div>
+                                <div class="qa-main-wrap">
+                                    <div class="qa-main">
+                                        <span class="q-icon">Q</span>
+                                        <p class="q-title">What is the difference between whey A and whey B?</p>
+                                    </div>
+                                    <div class="qa-main">
+                                      <span class="a-icon">A</span>
+                                      <p>Lorem ipsum dolor sit met, consecterur adipiscing elit, ed Do eius mod tempor
+                                        incididut ut labore te nosrud exerci Ullamcanco labori snidi ut aliquip exa
+                                        ead commonde</p>
+                                    </div>
+                                </div>
+                            </ion-list>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="line-break"></div>
+            <!-- bottom detail section -->
+            <!-- recommended promo set section -->
+            <div class="p-title">Bundle Set</div>
+            <div class="slider-item pd-product-slider">
+                <div class="swiper-wrapper pd-product-slide">
+                    <div class="swiper-slide pd-product-container">
+                        <ion-img class="product-image" src="assets/img/product-mock3.png"></ion-img>
+                        <div class="product-info">
+                            <div class="title">Baam Mass V1</div>
+                            <div class="price-d">฿1,000<span class="price-o">฿2,000</span></div>
+                            <ion-buttons class="cart">
+                                <ion-button>
+                                    <img src="assets/icon/cart-mini-icon.svg">
+                                </ion-button>
+                            </ion-buttons>
+                        </div>
+                    </div>
+                    <div class="swiper-slide pd-product-container">
+                        <ion-img class="product-image" src="assets/img/product-mock3.png"></ion-img>
+                        <div class="product-info">
+                            <div class="title">Baam Mass V1</div>
+                            <div class="price-d">฿1,000<span class="price-o">฿2,000</span></div>
+                            <ion-buttons class="cart">
+                                <ion-button>
+                                    <img src="assets/icon/cart-mini-icon.svg">
+                                </ion-button>
+                            </ion-buttons>
+                        </div>
+                    </div>
+                    <div class="swiper-slide pd-product-container">
+                        <ion-img class="product-image" src="assets/img/product-mock3.png"></ion-img>
+                        <div class="product-info">
+                            <div class="title">Baam Mass V1</div>
+                            <div class="price-d">฿1,000<span class="price-o">฿2,000</span></div>
+                            <ion-buttons class="cart">
+                                <ion-button>
+                                    <img src="assets/icon/cart-mini-icon.svg">
+                                </ion-button>
+                            </ion-buttons>
+                        </div>
+                    </div>
+                    <div class="swiper-slide pd-product-container">
+                        <ion-img class="product-image" src="assets/img/product-mock3.png"></ion-img>
+                        <div class="product-info">
+                            <div class="title">Baam Mass V1</div>
+                            <div class="price-d">฿1,000<span class="price-o">฿2,000</span></div>
+                            <ion-buttons class="cart">
+                                <ion-button>
+                                    <img src="assets/icon/cart-mini-icon.svg">
+                                </ion-button>
+                            </ion-buttons>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="line-break"></div>
+            <!-- review section -->
+            <div class="pd-review">
+                <div class="review-heading-wrap">
+                    <div class="re-flex">
+                        <div class="t-title">Customer Review</div>
+                        <div class="re-rate">
+                            <label>★★★★★</label><span class="re-rate-total">4/5</span><span class="re-count">(200 Reviews)</span>
+                        </div>
+                    </div>
+                    <ion-buttons class="re-write">
+                        <ion-button class="re-write-btn">Write Review</ion-button>
+                    </ion-buttons>
+                </div>
+                <!-- show max 4 reviews -->
+                <ion-list>
+                    <ion-item>
+                        <ion-avatar class="img-content" slot="start">
+                            <img src="assets/img/profile-placeholder.png">
+                        </ion-avatar>
+                        <div class="re-right-content">
+                            <ion-buttons>
+                                <ion-button class="like">0</ion-button>
+                            </ion-buttons>
+                            <div class="name">Barack Obama</div>
+                            <div class="rate">★★★★★</div>
+                            <div class="sub-info">
+                                <span>12 March 2022</span> |
+                                <span class="verify"><img src="assets/icon/verify-icon.svg"> Verified Buyer</span>
+                            </div>
+                            <div class="flavor">Vanilla Milkshake</div>
+                            <p class="description">Lorem ipsum dolor sit met, consecterur adipiscing elit, ed Do eius
+                              mod tempor incididut ut labore te dfdf dfsdfdf
+                            </p>
+                            <div class="img-vdo-container">
+                                <ul>
+                                    <li>
+                                        <ion-button class="play-btn">
+                                            <img src="assets/icon/play-icon.svg">
+                                        </ion-button>
+                                        <img src="https://dummyimage.com/360x640/333/aaa">
+                                    </li>
+                                    <li>
+                                        <ion-button class="play-btn">
+                                            <img src="assets/icon/play-icon.svg">
+                                        </ion-button>
+                                        <img src="assets/img/place-holder3.png">
+                                    </li>
+                                    <li>
+                                        <img src="assets/img/place-holder3.png">
+                                    </li>
+                                    <li>
+                                        <img src="assets/img/place-holder3.png">
+                                    </li>
+                                    <li>
+                                        <img src="assets/img/place-holder3.png">
+                                    </li>
+                                    <li>
+                                        <img src="assets/img/place-holder3.png">
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="bottom-sub-info">
+                                <span>Order ID: 0123456</span> |
+                                <span>Product 1 of 2</span><!-- ชิ้นที่ 1 จาก 2 -->
+                            </div>
+                        </div>
+                    </ion-item>
+                    <ion-item>
+                        <ion-avatar class="img-content" slot="start">
+                            <img src="assets/img/profile-placeholder.png">
+                        </ion-avatar>
+                        <div class="re-right-content">
+                            <ion-buttons>
+                                <ion-button class="like">0</ion-button>
+                            </ion-buttons>
+                            <div class="name">Onitsuka Tiger</div>
+                            <div class="rate">★★★★★</div>
+                            <div class="sub-info">
+                                <span>12 March 2022</span>
+                            </div>
+                            <p class="description">Lorem ipsum dolor sit met, consecterur adipiscing elit, ed Do eius
+                              mod tempor incididut ut labore te dfdf dfsdfdf
+                            </p>
+                            <div class="bottom-sub-info">   
+                            </div>
+                        </div>
+                    </ion-item>
+                    <ion-item>
+                        <ion-avatar class="img-content" slot="start">
+                            <img src="assets/img/profile-placeholder.png">
+                        </ion-avatar>
+                        <div class="re-right-content">
+                            <ion-buttons>
+                                <ion-button class="like-active">3</ion-button>
+                            </ion-buttons>
+                            <div class="name">Steve Jobs</div>
+                            <div class="rate">★★★★★</div>
+                            <div class="sub-info">
+                                <span>12 March 2022</span>
+                                <span class="verify"><img src="assets/icon/verify-icon.svg"> Verified Buyer</span>
+                            </div>
+                            <p class="description">Lorem ipsum dolor sit met, consecterur adipiscing elit, ed Do eius
+                              mod tempor incididut ut labore te dfdf dfsdfdf
+                            </p>
+                            <div class="bottom-sub-info">
+                                <span>Order ID: 0123456</span>
+                            </div>
+                        </div>
+                    </ion-item>
+                    <ion-item>
+                        <ion-avatar class="img-content" slot="start">
+                            <img src="assets/img/profile-placeholder.png">
+                        </ion-avatar>
+                        <div class="re-right-content">
+                            <ion-buttons>
+                                <ion-button class="like-active">3</ion-button>
+                            </ion-buttons>
+                            <div class="name">Steve Jobs</div>
+                            <div class="rate">★★★★★</div>
+                            <div class="sub-info">
+                                <span>12 March 2022</span> |
+                                <span class="verify"><img src="assets/icon/verify-icon.svg"> Verified Buyer</span>
+                            </div>
+                            <div class="flavor">Vanilla Milkshake</div>
+                            <p class="description">Lorem ipsum dolor sit met, consecterur adipiscing elit, ed Do eius
+                              mod tempor incididut ut labore te dfdf dfsdfdf
+                            </p>
+                            <div class="bottom-sub-info">
+                                <span>Order ID: 0123456</span> |
+                                <span>Product 1 of 2</span><!-- ชิ้นที่ 2 จาก 2 -->
+                            </div>
+                        </div>
+                    </ion-item>
+                </ion-list>
+                <ion-buttons class="sm-btn-wrap">
+                    <ion-button class="sm-btn">See More</ion-button>
+                </ion-buttons>
+            </div>
+        </ion-content>
+        <!-- bottom fixed tab -->
+        <ion-footer class="footer-menu-common">
+            <div class="pd-noti-float" id="purchase-notification">
+                <span class="noti-text"><img src="assets/icon/mini-noti-icon.svg"> This product was last placed 2 minutes ago from Nonthaburi</span>
+                <ion-button class="noti-close-btn" onclick="closeNotification()">
+                    <ion-icon name="close"></ion-icon>
+                </ion-button>
+            </div>
+            <ion-toolbar class="menu-bar-wrap">
+                <ion-buttons class="menu-btn">
+                    <ion-button class="favorite-btn s-inactive"></ion-button>
+                    <ion-button class="main-footer-btn active">Add to Cart</ion-button>
+                </ion-buttons>
+            </ion-toolbar>
+        </ion-footer>
+    </ion-app>
+
+    <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css" />
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <script src="components/cart-modal.js"></script>
+    <script>
+        // Initialize Swiper for product images
+        var imageSlider = new Swiper(".pd-image-slider", {
+            slidesPerView: 1,
+            spaceBetween: 0,
+            loop: true,
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+        });
+
+        // Initialize Swiper for content tabs
+        var contentSlider = new Swiper(".pd-content-slider", {
+            slidesPerView: 1,
+            spaceBetween: 0,
+            allowTouchMove: false, // Disable touch to control via tabs only
+            autoHeight: true, // Enable auto height
+            watchSlidesProgress: true,
+            watchSlidesVisibility: true,
+            on: {
+                slideChange: function () {
+                    // Update height when slide changes
+                    this.updateAutoHeight(300);
+                },
+                init: function() {
+                    // Set initial height
+                    this.updateAutoHeight(0);
+                }
+            }
+        });
+
+        // Initialize Swiper for product recommendations
+        var productSlider = new Swiper(".pd-product-slider", {
+            slidesPerView: "auto",
+            spaceBetween: 16,
+            freeMode: true,
+        });
+
+        // Tab switching functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabButtons = document.querySelectorAll('.pd-tab-btn');
+            
+            tabButtons.forEach((button, index) => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    // Switch to corresponding slide
+                    contentSlider.slideTo(index);
+                    
+                    // Update height after slide change
+                    setTimeout(() => {
+                        contentSlider.updateAutoHeight(300);
+                    }, 100);
+                });
+            });
+
+            // Add to cart button functionality
+            const addToCartBtn = document.querySelector('.main-footer-btn');
+            if (addToCartBtn) {
+                addToCartBtn.addEventListener('click', function() {
+                    // Create and show modal
+                    showCartModal();
+                });
+            }
+
+            // Size selector functionality
+            const sizeButtons = document.querySelectorAll('.size-sub-btn');
+            sizeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    if (!this.classList.contains('inactive')) {
+                        // Remove active class from all size buttons
+                        sizeButtons.forEach(btn => btn.classList.remove('active'));
+                        // Add active class to clicked button
+                        this.classList.add('active');
+                    }
+                });
+            });
+
+            // Favorite button toggle
+            const favoriteBtn = document.querySelector('.favorite-btn');
+            if (favoriteBtn) {
+                favoriteBtn.addEventListener('click', function() {
+                    this.classList.toggle('s-inactive');
+                    this.classList.toggle('s-active');
+                });
+            }
+
+            // Review like buttons
+            const likeButtons = document.querySelectorAll('.like, .like-active');
+            likeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    if (this.classList.contains('like')) {
+                        this.classList.remove('like');
+                        this.classList.add('like-active');
+                        this.textContent = parseInt(this.textContent) + 1;
+                    } else {
+                        this.classList.remove('like-active');
+                        this.classList.add('like');
+                        this.textContent = Math.max(0, parseInt(this.textContent) - 1);
+                    }
+                });
+            });
+        });
+
+        // Function to show cart modal
+        function showCartModal() {
+            // Use the cart modal component
+            cartModal.show();
+        }
+
+        // Function to close notification
+        function closeNotification() {
+            const notification = document.getElementById('purchase-notification');
+            if (notification) {
+                notification.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateY(-20px)';
+                
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 300);
+                
+                // Remember that user closed the notification
+                localStorage.setItem('purchaseNotificationClosed', 'true');
+            }
+        }
+
+        // Initialize notification behavior
+        document.addEventListener('DOMContentLoaded', function() {
+            const notification = document.getElementById('purchase-notification');
+            
+            // Check if user has previously closed the notification
+            if (localStorage.getItem('purchaseNotificationClosed') === 'true') {
+                if (notification) {
+                    notification.style.display = 'none';
+                }
+                return;
+            }
+            
+            // Auto-hide notification after 10 seconds
+            if (notification) {
+                setTimeout(() => {
+                    if (notification.style.display !== 'none') {
+                        closeNotification();
+                    }
+                }, 10000);
+            }
+        });
+
+        // Update slide counter
+        function updateSlideCounter() {
+            const currentSlide = imageSlider.activeIndex + 1;
+            const totalSlides = imageSlider.slides.length;
+            document.querySelector('.slide-count span').textContent = `${currentSlide}/${totalSlides}`;
+        }
+
+        // Update counter on slide change
+        if (typeof imageSlider !== 'undefined') {
+            imageSlider.on('slideChange', updateSlideCounter);
+        }
+    </script>
+</body>
+
+</html>

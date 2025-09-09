@@ -1,0 +1,205 @@
+/* .ios ion-header.home {
+  padding-top: var(--ion-safe-area-top, 0);
+} */
+
+/* body {
+  margin-top: constant(safe-area-inset-top);
+  margin-top: env(safe-area-inset-top);
+} */
+
+a {
+  text-decoration: none;
+}
+
+.ios ion-header.safe-area {
+  margin-top: constant(safe-area-inset-top);
+  margin-top: env(safe-area-inset-top);
+}
+
+.ios ion-header .markHeader {
+  height: constant(safe-area-inset-top);
+  height: env(safe-area-inset-top);
+  background-color: #000;
+}
+
+.ios ion-content .safe-area {
+  margin-top: constant(safe-area-inset-top);
+  margin-top: env(safe-area-inset-top);
+}
+
+ion-footer.safe-area ion-toolbar.ios {
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+ion-footer.safe-area ion-toolbar.md {
+  padding-bottom: 10px;
+}
+
+.swiper {
+  width: 100%;
+}
+
+.swiper-slide {
+  text-align: left;
+}
+
+.sbp-slider-wrap {
+  overflow-y: scroll;
+  display: block;
+}
+
+ion-content::part(scroll)::-webkit-scrollbar {
+  display: none;
+}
+
+.card-wrap {
+  text-align: left;
+}
+
+.swiperContentWrap {
+  width: 100%;
+}
+
+.pd-mid-sec-wrap .pd-content-slider .swiper-slide div {
+  text-align: left;
+  overflow: hidden;
+  width: 100%;
+}
+
+.video-player {
+  width: 100%;
+  height: 100%;
+}
+
+.shake {
+  animation: shake 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  transform: translate3d(0, 0, 0);
+}
+
+@keyframes shake {
+  10%,
+  90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+
+  20%,
+  80% {
+    transform: translate3d(2px, 0, 0);
+  }
+
+  30%,
+  50%,
+  70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+
+  40%,
+  60% {
+    transform: translate3d(4px, 0, 0);
+  }
+}
+
+.cart-updated {
+  --backdrop-opacity: 0;
+  --background: rgba(0, 0, 0, 0.7);
+  --min-width: 40%;
+  --max-width: 60%;
+}
+
+.cart-updated .wrap-cart-updated {
+  text-align: center;
+}
+
+.cart-updated .wrap-cart-updated .cart-update-icon {
+  width: 35x;
+  height: 35px;
+  opacity: 0.6;
+}
+
+.cart-updated .wrap-cart-updated .cart-updated-caption {
+  color: #fff;
+  opacity: 0.7;
+}
+
+.cart-product-slider .swiper,
+.cart-freebie-slider .swiper {
+  width: 100%;
+}
+
+/* Content slider auto height */
+.pd-content-slider {
+  height: auto !important;
+}
+
+.pd-content-slider .swiper-wrapper {
+  height: auto !important;
+  align-items: stretch;
+}
+
+.pd-content-slider .swiper-slide {
+  height: auto !important;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ensure all slides have consistent styling */
+.pd-overview,
+.pd-benefit,
+.pd-direction,
+.pd-storage,
+.pd-cautions,
+.pd-qa {
+  padding: 20px;
+  min-height: auto;
+  height: auto !important;
+}
+
+/* Fix for long content in benefit section */
+.pd-benefit {
+  overflow-y: auto;
+  max-height: none;
+}
+
+/* Make sure images in direction slide are responsive */
+.pd-direction img {
+  width: 100%;
+  height: auto;
+  max-width: 500px;
+}
+
+/* Notification close button styling */
+.pd-noti-float {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 40px;
+}
+
+.noti-close-btn {
+  --background: transparent;
+  --color: rgba(255, 255, 255, 0.7);
+  --border-radius: 50%;
+  --padding-start: 8px;
+  --padding-end: 8px;
+  --padding-top: 8px;
+  --padding-bottom: 8px;
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  min-height: 24px;
+  height: 24px;
+  width: 24px;
+  font-size: 14px;
+}
+
+.noti-close-btn:hover {
+  --color: rgba(255, 255, 255, 1);
+  --background: rgba(255, 255, 255, 0.1);
+}
+
+.noti-close-btn ion-icon {
+  font-size: 14px;
+}
