@@ -331,15 +331,15 @@ erDiagram
 
     notifications ||--o{ user_notification_views : "viewed_by"
 ```
-ผมให้AI Generate schemaออกมา
-จากER Diagram จะมีtable และrelation ต่างๆมากมาย แต่tableที่สำคัญที่สุดสำหรับscopeงาน ของprojectนี้คือ table products
-ผมขออธิบายดังนี้
-1.product แต่ละตัวจะอยู่ในCategoryต่างๆ เพื่อจัดเป็นหมวดหมู่
-2. 1 product มีได้หลาย promotions และ 1 promotion มีได้หลาย Products
-3.แต่ละProduct จะมีหลาย images, faqs, reviews
-ที่สำคัญเลยก็คือ variants(ขนาด), flavors(รสชาติ) ซึ่งจะมีตารางที่ประกอบ 2 attribute นี้เข้าด้วยกันเรียกว่า product_variant_flavor ซึ่งจะเรียกว่า 1 SKU เป็น uniq key
+- ผมให้AI Generate schemaออกมา
+- จากER Diagram จะมีtable และrelation ต่างๆมากมาย แต่tableที่สำคัญที่สุดสำหรับscopeงาน ของprojectนี้คือ table products
+- ผมขออธิบายดังนี้
+- 1.product แต่ละตัวจะอยู่ในCategoryต่างๆ เพื่อจัดเป็นหมวดหมู่
+- 2. 1 product มีได้หลาย promotions และ 1 promotion มีได้หลาย Products
+- 3.แต่ละProduct จะมีหลาย images, faqs, reviews
+- ที่สำคัญเลยก็คือ variants(ขนาด), flavors(รสชาติ) ซึ่งจะมีตารางที่ประกอบ 2 attribute นี้เข้าด้วยกันเรียกว่า product_variant_flavor ซึ่งจะเรียกว่า 1 SKU เป็น uniq key
 
-SKU ตัวนี้ มีความสำคัญมาก เพราะเกี่ยวข้องกับ ตะกร้าสินค้า เราไม่ได้add product เข้าตะกร้าสินค้า แต่เราadd SKU เข้าตระกร้าสินค้า และระบุจำนวนชิ้น
-SKU ยังเกี่ยวข้องกับ order แต่ละorder ไม่ได้มีลิสรายproducts โดยตรง แต่จะเป็นรายการ SKU หลายๆรายการที่ประกอบกันเป็น 1 order ซึ่งผมเรียกว่า ตาราง order_items
-นอกจากนี้ SKU ยังเกี่ยวข้องกับ Inventory เราจะนับstock จำนวนชิ้นแต่ละ SKU
+- SKU ตัวนี้ มีความสำคัญมาก เพราะเกี่ยวข้องกับ ตะกร้าสินค้า เราไม่ได้add product เข้าตะกร้าสินค้า แต่เราadd SKU เข้าตระกร้าสินค้า และระบุจำนวนชิ้น
+- SKU ยังเกี่ยวข้องกับ order แต่ละorder ไม่ได้มีลิสรายproducts โดยตรง แต่จะเป็นรายการ SKU หลายๆรายการที่ประกอบกันเป็น 1 order ซึ่งผมเรียกว่า ตาราง order_items
+- นอกจากนี้ SKU ยังเกี่ยวข้องกับ Inventory เราจะนับstock จำนวนชิ้นแต่ละ SKU
 
