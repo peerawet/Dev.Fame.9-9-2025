@@ -73,7 +73,6 @@ erDiagram
         text short_description
         int category_id FK
         varchar brand
-        varchar sku UK
         decimal protein_per_serving
         int calories_per_serving
         decimal fat_per_serving
