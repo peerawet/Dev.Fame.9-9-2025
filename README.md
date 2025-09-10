@@ -1,4 +1,4 @@
-## FITWHEY E-commerce – ERD
+## FITWHEY E-commerce
 
 **ลิ้งค์เข้าสู่เว็บไซต์** https://peerawet.github.io/Dev.Fame.9-9-2025/product-detail-ion.html
 
