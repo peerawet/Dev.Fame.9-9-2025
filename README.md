@@ -96,11 +96,6 @@ erDiagram
         varchar size_name
         decimal size_value
         varchar size_unit
-        decimal base_price
-        decimal sale_price
-        decimal cost_price
-        int stock_quantity
-        int low_stock_threshold
         decimal weight_grams
         json dimensions_json
         boolean is_active
@@ -124,6 +119,8 @@ erDiagram
         int variant_id FK
         int flavor_id FK
         decimal additional_price
+        decimal base_price
+        decimal cost_price
         int stock_quantity
         varchar sku UK
         date expiry_date
