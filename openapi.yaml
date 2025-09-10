@@ -1,0 +1,593 @@
+openapi: 3.0.3
+info:
+  title: FITWHEY Mock APIs (Aligned with ERD)
+  version: 1.0.0
+servers:
+  - url: https://mock.fitwhey.local
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    UserTier:
+      type: object
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        description: { type: string }
+        discount_percentage: { type: number, format: float }
+        min_points: { type: integer }
+        benefits: { type: object, additionalProperties: true }
+        icon: { type: string }
+        created_at: { type: string, format: date-time }
+    User:
+      type: object
+      properties:
+        id: { type: integer }
+        username: { type: string }
+        email: { type: string, format: email }
+        first_name: { type: string }
+        last_name: { type: string }
+        phone: { type: string }
+        date_of_birth: { type: string, format: date }
+        gender: { type: string, enum: [male, female, other] }
+        profile_image: { type: string }
+        tier_id: { type: integer }
+        points: { type: integer }
+        is_active: { type: boolean }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+    Category:
+      type: object
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        description: { type: string }
+        parent_id: { type: integer, nullable: true }
+        slug: { type: string }
+        image: { type: string }
+        is_active: { type: boolean }
+        sort_order: { type: integer }
+        created_at: { type: string, format: date-time }
+    Product:
+      type: object
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        slug: { type: string }
+        description: { type: string }
+        short_description: { type: string }
+        category_id: { type: integer }
+        brand: { type: string }
+        protein_per_serving: { type: number }
+        calories_per_serving: { type: integer }
+        fat_per_serving: { type: number }
+        carbs_per_serving: { type: number }
+        bcaa_per_serving: { type: number }
+        glutamine_per_serving: { type: number }
+        average_rating: { type: number }
+        total_reviews: { type: integer }
+        meta_title: { type: string }
+        meta_description: { type: string }
+        is_active: { type: boolean }
+        is_featured: { type: boolean }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+    ProductVariant:
+      type: object
+      properties:
+        id: { type: integer }
+        product_id: { type: integer }
+        size_name: { type: string }
+        size_value: { type: number }
+        size_unit: { type: string }
+        weight_grams: { type: number }
+        dimensions_json: { type: object, additionalProperties: true }
+        is_active: { type: boolean }
+        sort_order: { type: integer }
+        created_at: { type: string, format: date-time }
+    ProductFlavor:
+      type: object
+      properties:
+        id: { type: integer }
+        product_id: { type: integer }
+        flavor_name: { type: string }
+        flavor_code: { type: string }
+        hex_color: { type: string }
+        is_active: { type: boolean }
+        sort_order: { type: integer }
+        created_at: { type: string, format: date-time }
+    ProductVariantFlavor:
+      type: object
+      properties:
+        id: { type: integer }
+        variant_id: { type: integer }
+        flavor_id: { type: integer }
+        additional_price: { type: number }
+        stock_quantity: { type: integer }
+        sku: { type: string }
+        base_price: { type: number }
+        cost_price: { type: number, nullable: true }
+        expiry_date: { type: string, format: date }
+        batch_number: { type: string }
+        is_active: { type: boolean }
+        created_at: { type: string, format: date-time }
+    ProductVariantFlavorDetail:
+      allOf:
+        - $ref: "#/components/schemas/ProductVariantFlavor"
+        - type: object
+          properties:
+            is_available:
+              {
+                type: boolean,
+                description: "true เมื่อ is_active และ stock_quantity > 0",
+              }
+    ProductImage:
+      type: object
+      properties:
+        id: { type: integer }
+        product_id: { type: integer }
+        variant_id: { type: integer, nullable: true }
+        flavor_id: { type: integer, nullable: true }
+        image_url: { type: string }
+        alt_text: { type: string }
+        is_primary: { type: boolean }
+        sort_order: { type: integer }
+        image_type:
+          {
+            type: string,
+            enum: [product, gallery, supplement_fact, directions],
+          }
+        created_at: { type: string, format: date-time }
+    ProductFaq:
+      type: object
+      properties:
+        id: { type: integer }
+        product_id: { type: integer }
+        question: { type: string }
+        answer: { type: string }
+        sort_order: { type: integer }
+        is_active: { type: boolean }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+    ReviewMedia:
+      type: object
+      properties:
+        id: { type: integer }
+        review_id: { type: integer }
+        media_type: { type: string, enum: [image, video] }
+        media_url: { type: string }
+        thumbnail_url: { type: string, nullable: true }
+        alt_text: { type: string, nullable: true }
+        sort_order: { type: integer }
+        created_at: { type: string, format: date-time }
+    Review:
+      type: object
+      properties:
+        id: { type: integer }
+        product_id: { type: integer }
+        user_id: { type: integer }
+        order_item_id: { type: integer, nullable: true }
+        rating: { type: integer, minimum: 1, maximum: 5 }
+        title: { type: string, nullable: true }
+        comment: { type: string, nullable: true }
+        variant_size: { type: string, nullable: true }
+        flavor_name: { type: string, nullable: true }
+        is_verified_purchase: { type: boolean }
+        helpful_count: { type: integer }
+        total_votes: { type: integer }
+        is_approved: { type: boolean }
+        is_featured: { type: boolean }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    ReviewList:
+      type: object
+      properties:
+        summary:
+          type: object
+          properties:
+            average_rating: { type: number }
+            total_reviews: { type: integer }
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/Review" }
+        next_cursor: { type: string, nullable: true }
+
+paths:
+  # Product endpoints
+  /v1/products/{productId}:
+    get:
+      summary: Get detailed product information by ID
+      description: |
+        Retrieves comprehensive product details including:
+        - Basic product information (name, description, nutritional facts)
+        - Product images (gallery, supplement facts, directions)
+        - Frequently asked questions (FAQs)
+        - Customer reviews and ratings
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: productId
+          required: true
+          description: Unique identifier for the product
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "200":
+          description: Successfully retrieved product details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  product:
+                    $ref: "#/components/schemas/Product"
+                  images:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ProductImage"
+                  faqs:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ProductFaq"
+              examples: # ✅ ต้องอยู่ตรงนี้
+                complete_product_response:
+                  summary: Complete product response with all fields
+                  value:
+                    product:
+                      id: 1
+                      name: "Baam 100% My Whey"
+                      slug: "baam-100-my-whey"
+                      description: "เวย์โปรตีนคุณภาพสูง สำหรับการเสริมสร้างกล้ามเนื้อ"
+                      short_description: "โปรตีนเสริมสร้างกล้ามเนื้อ คุณภาพสูง"
+                      category_id: 1
+                      brand: "BAAM"
+                      protein_per_serving: 25
+                      calories_per_serving: 140
+                      fat_per_serving: 2
+                      carbs_per_serving: 4
+                      bcaa_per_serving: 5.5
+                      glutamine_per_serving: 4
+                      average_rating: 4.5
+                      total_reviews: 200
+                      meta_title: "Baam My Whey"
+                      meta_description: "Whey protein concentrate"
+                      is_active: true
+                      is_featured: true
+                      created_at: "2025-01-01T00:00:00Z"
+                      updated_at: "2025-01-01T00:00:00Z"
+                    images:
+                      - id: 1
+                        product_id: 1
+                        image_url: "https://cdn.fitwhey.com/products/baam-whey/main.jpg"
+                        alt_text: "Baam 100% My Whey Main Product Image"
+                        is_primary: true
+                        sort_order: 1
+                        image_type: "product"
+                        created_at: "2025-01-01T00:00:00Z"
+                    faqs:
+                      - id: 1
+                        product_id: 1
+                        question: "วิธีการใช้งานที่แนะนำคืออะไร?"
+                        answer: "ผสม 1 สกู๊ป (30g) กับน้ำ 200-250ml ดื่มหลังออกกำลังกายทันที"
+                        sort_order: 1
+                        is_active: true
+                        created_at: "2025-01-01T00:00:00Z"
+                        updated_at: "2025-01-01T00:00:00Z"
+
+        "404":
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Product not found"
+                  code:
+                    type: string
+                    example: "PRODUCT_NOT_FOUND"
+
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Internal server error"
+                  code:
+                    type: string
+                    example: "INTERNAL_ERROR"
+
+  # Product SKU/Inventory endpoints
+  /v1/products/{productId}/sku:
+    get:
+      summary: Get product SKU and inventory information
+      description: |
+        Retrieves detailed SKU information for a specific product including:
+        - Available variants (sizes)
+        - Available flavors
+        - SKU combinations with pricing and stock levels
+        - Inventory availability status
+      tags:
+        - Inventory
+      parameters:
+        - in: path
+          name: productId
+          required: true
+          description: Unique identifier for the product
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "200":
+          description: Successfully retrieved SKU information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  variants:
+                    type: array
+                    description: Available product size variants
+                    items:
+                      $ref: "#/components/schemas/ProductVariant"
+                  flavors:
+                    type: array
+                    description: Available product flavors
+                    items:
+                      $ref: "#/components/schemas/ProductFlavor"
+                  variant_flavors:
+                    type: array
+                    description: SKU combinations with pricing and inventory
+                    items:
+                      $ref: "#/components/schemas/ProductVariantFlavorDetail"
+              examples:
+                sku_response:
+                  summary: Product SKU information with variants and flavors
+                  value:
+                    variants:
+                      - id: 5
+                        product_id: 1
+                        size_name: "5lb"
+                        size_value: 2270
+                        size_unit: "g"
+                        weight_grams: 2270
+                        dimensions_json:
+                          { "length": 15, "width": 15, "height": 20 }
+                        sort_order: 5
+                        is_active: true
+                        created_at: "2025-01-01T00:00:00Z"
+                      - id: 2
+                        product_id: 1
+                        size_name: "250g"
+                        size_value: 250
+                        size_unit: "g"
+                        weight_grams: 250
+                        dimensions_json:
+                          { "length": 8, "width": 8, "height": 12 }
+                        sort_order: 2
+                        is_active: true
+                        created_at: "2025-01-01T00:00:00Z"
+                    flavors:
+                      - id: 1
+                        product_id: 1
+                        flavor_name: "Chocolate"
+                        flavor_code: "CHOC"
+                        hex_color: "#8B4513"
+                        sort_order: 1
+                        is_active: true
+                        created_at: "2025-01-01T00:00:00Z"
+                      - id: 2
+                        product_id: 1
+                        flavor_name: "Vanilla"
+                        flavor_code: "VAN"
+                        hex_color: "#F5DEB3"
+                        sort_order: 2
+                        is_active: true
+                        created_at: "2025-01-01T00:00:00Z"
+                    variant_flavors:
+                      - id: 101
+                        variant_id: 5
+                        flavor_id: 2
+                        sku: "BAAM-WHEY-5LB-VAN-001"
+                        base_price: 2000
+                        additional_price: 0
+                        cost_price: 1200
+                        stock_quantity: 5
+                        expiry_date: "2025-12-31"
+                        batch_number: "B2024001"
+                        is_active: true
+                        is_available: true
+                        created_at: "2025-01-01T00:00:00Z"
+                      - id: 102
+                        variant_id: 5
+                        flavor_id: 1
+                        sku: "BAAM-WHEY-5LB-CHOC-001"
+                        base_price: 2000
+                        additional_price: 0
+                        cost_price: 1200
+                        stock_quantity: 0
+                        expiry_date: "2025-12-31"
+                        batch_number: "B2024001"
+                        is_active: true
+                        is_available: false
+                        created_at: "2025-01-01T00:00:00Z"
+                      - id: 103
+                        variant_id: 2
+                        flavor_id: 2
+                        sku: "BAAM-WHEY-250G-VAN-001"
+                        base_price: 500
+                        additional_price: 0
+                        cost_price: 300
+                        stock_quantity: 5
+                        expiry_date: "2025-12-31"
+                        batch_number: "B2024001"
+                        is_active: true
+                        is_available: true
+                        created_at: "2025-01-01T00:00:00Z"
+                      - id: 104
+                        variant_id: 2
+                        flavor_id: 1
+                        sku: "BAAM-WHEY-250G-CHOC-001"
+                        base_price: 500
+                        additional_price: 0
+                        cost_price: 300
+                        stock_quantity: 0
+                        expiry_date: "2025-12-31"
+                        batch_number: "B2024001"
+                        is_active: true
+                        is_available: false
+                        created_at: "2025-01-01T00:00:00Z"
+
+  # User endpoints
+  /v1/user:
+    get:
+      summary: Get current user information with tier details
+      description: |
+        Retrieves current user information including their tier details.
+        If JWT token is missing or invalid, returns guest user information.
+
+        **Authentication Behavior:**
+        - Valid JWT token: Returns user details with tier information
+        - Invalid/Missing JWT token: Returns guest user with default tier
+        - Expired JWT token: Returns guest user with default tier
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+        - {} # Allow unauthenticated access (returns guest)
+      responses:
+        "200":
+          description: Successfully retrieved user information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  # User information
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        nullable: true
+                        description: User ID (null for guest users)
+                      username:
+                        type: string
+                        nullable: true
+                        description: Username (null for guest users)
+                      email:
+                        type: string
+                        format: email
+                        nullable: true
+                        description: User email (null for guest users)
+                      first_name:
+                        type: string
+                        nullable: true
+                        description: User first name (null for guest users)
+                      last_name:
+                        type: string
+                        nullable: true
+                        description: User last name (null for guest users)
+                      phone:
+                        type: string
+                        nullable: true
+                        description: User phone number (null for guest users)
+                      profile_image:
+                        type: string
+                        nullable: true
+                        description: Profile image URL (null for guest users)
+                      points:
+                        type: integer
+                        description: User loyalty points (0 for guest users)
+                      is_authenticated:
+                        type: boolean
+                        description: Whether user is authenticated or guest
+                      created_at:
+                        type: string
+                        format: date-time
+                        nullable: true
+                        description: Account creation date (null for guest users)
+
+                  # User tier information (always present)
+                  tier:
+                    $ref: "#/components/schemas/UserTier"
+              examples:
+                authenticated_user:
+                  summary: Authenticated user with premium tier
+                  value:
+                    user:
+                      id: 123
+                      username: "john_doe"
+                      email: "john@example.com"
+                      first_name: "John"
+                      last_name: "Doe"
+                      phone: "+66812345678"
+                      profile_image: "https://cdn.fitwhey.com/users/123/profile.jpg"
+                      points: 2500
+                      is_authenticated: true
+                      created_at: "2024-06-15T08:30:00Z"
+                    tier:
+                      id: 3
+                      name: "Premium"
+                      description: "สมาชิกพรีเมียม รับส่วนลดและสิทธิพิเศษมากมาย"
+                      discount_percentage: 15.0
+                      min_points: 2000
+                      benefits:
+                        free_shipping: true
+                        priority_support: true
+                        exclusive_products: true
+                        birthday_discount: 20
+                      icon: "https://cdn.fitwhey.com/tiers/premium.svg"
+                      created_at: "2025-01-01T00:00:00Z"
+                guest_user:
+                  summary: Guest user (unauthenticated or invalid token)
+                  value:
+                    user:
+                      id: null
+                      username: null
+                      email: null
+                      first_name: null
+                      last_name: null
+                      phone: null
+                      profile_image: null
+                      points: 0
+                      is_authenticated: false
+                      created_at: null
+                    tier:
+                      id: 1
+                      name: "Guest"
+                      description: "ผู้เยียมชม สามารถสมัครสมาชิกเพื่อรับสิทธิพิเศษ"
+                      discount_percentage: 0.0
+                      min_points: 0
+                      benefits:
+                        free_shipping: false
+                        priority_support: false
+                        exclusive_products: false
+                        register_bonus: 100
+                      icon: "https://cdn.fitwhey.com/tiers/guest.svg"
+                      created_at: "2025-01-01T00:00:00Z"
+
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Internal server error"
+                  code:
+                    type: string
+                    example: "INTERNAL_ERROR"
